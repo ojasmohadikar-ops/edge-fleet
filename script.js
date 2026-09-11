@@ -91,6 +91,8 @@ function connectWebSocket() {
 
                 console.log("Live Simulation Update:", data);
 
+                updateLiveEvents(data);
+
                 // Robots
                 if (data.robots) {
                     updateRobotCards(data.robots);
@@ -170,6 +172,45 @@ function connectWebSocket() {
             error
         );
     }
+}
+
+// ================= LIVE P2P EVENTS =================
+let lastEventState = { collisionCount: 0, deadlockResolutions: 0, reroutesFromBlockage: 0 };
+
+function addLiveEvent(message) {
+    const list = document.getElementById("eventList");
+    if (!list) return;
+
+    if (list.querySelector("p")?.textContent === "Waiting for live events...") {
+        list.innerHTML = "";
+    }
+
+    const item = document.createElement("p");
+    item.style.margin = "8px 0";
+    item.textContent = "• " + message;
+    list.prepend(item);
+
+    while (list.children.length > 6) {
+        list.removeChild(list.lastChild);
+    }
+}
+
+function updateLiveEvents(data) {
+    if (data.collisionCount > lastEventState.collisionCount) {
+        addLiveEvent("⚠️ Collision avoidance: Robot priority/wait decision triggered.");
+    }
+
+    if (data.deadlockResolutions > lastEventState.deadlockResolutions) {
+        addLiveEvent("🔄 Deadlock resolved: P2P priority reassigned and robot rerouted.");
+    }
+
+    if (data.reroutesFromBlockage > lastEventState.reroutesFromBlockage) {
+        addLiveEvent("🚧 Aisle blockage detected: Robot route recalculated.");
+    }
+
+    lastEventState.collisionCount = data.collisionCount ?? lastEventState.collisionCount;
+    lastEventState.deadlockResolutions = data.deadlockResolutions ?? lastEventState.deadlockResolutions;
+    lastEventState.reroutesFromBlockage = data.reroutesFromBlockage ?? lastEventState.reroutesFromBlockage;
 }
 
 // ================= UPDATE METRICS =================
