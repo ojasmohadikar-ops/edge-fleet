@@ -5,5 +5,10 @@
   "scripts": {
     "start": "node backend/server.js",
     "postinstall": "cd backend && npm install"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "ws": "^8.21.3"
   }
 }
