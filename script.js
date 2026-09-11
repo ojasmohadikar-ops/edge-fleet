@@ -77,7 +77,7 @@ function connectWebSocket() {
 
     try {
 
-        socket = new WebSocket("ws://localhost:4000");
+        socket = new WebSocket("wss://edge-fleet-production.up.railway.app");
 
         socket.onopen = () => {
             console.log("EDGE-FLEET WebSocket Connected");
