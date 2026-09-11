@@ -24,8 +24,8 @@ a priority-based deadlock resolution rule.
 
 Then open http://localhost:4000 in your browser.
 
-## Tech stack
-Node.js, Express, WebSocket (ws), vanilla JS/HTML/CSS frontend.
+## Tec
+**SIH Prode.js, Express, WebSocket (ws), vanilla JS/HTML/CSS frontend.
 
 ## Benchmark result (chokepoint scenario)
 | Mode | Ticks to complete 10 tasks |
