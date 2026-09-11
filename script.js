@@ -1,6 +1,6 @@
 // ================= EDGE-FLEET FRONTEND CONFIG =================
 
-const API_URL = "http://localhost:4000";
+const API_URL = "https://edge-fleet-production.up.railway.app";
 
 // ================= TASK ALLOCATION API =================
 
