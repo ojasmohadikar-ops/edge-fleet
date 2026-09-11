@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "cd backend && node server.js",
-    "install-all": "cd backend && npm install"
-  },
-  "description": "Edge-AI Based Distributed Fleet Coordination for Autonomous Mobile Robots (SIH 26123)"
+    "start": "node backend/server.js",
+    "postinstall": "cd backend && npm install"
+  }
 }
