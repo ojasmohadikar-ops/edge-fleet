@@ -165,8 +165,15 @@ function moveRobots() {
     if (r.status === 'waiting' && r.waitTicks >= STUCK_LIMIT) {
       const blockedCell = r.path.length > 0 ? r.path[0] : null;
       const goal = r.path.length > 0 ? r.path[r.path.length - 1] : { x: r.x, y: r.y };
-      r.path = astar({ x: r.x, y: r.y }, goal, blockedCell); r.path.shift();
-      deadlockResolutions++; r.status = 'rerouted'; r.waitTicks = 0;
+      const newPath = astar({ x: r.x, y: r.y }, goal, blockedCell);
+      deadlockResolutions++; r.waitTicks = 0;
+      if (newPath.length > 0) {
+        newPath.shift();
+        r.path = newPath;
+        r.status = 'rerouted';
+      } else {
+        r.status = 'waiting';
+      }
     }
   });
 }
