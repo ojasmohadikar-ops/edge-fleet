@@ -133,13 +133,13 @@ function decideMoveDecentralized(robot, next) {
 function moveRobots() {
   robots.forEach(r => replanIfPathBlocked(r));
 
-  // Step 1: every robot independently broadcasts its intent (P2P, no central sink deciding)
-  broadcastIntents(robots);
-
-  // Step 2: every robot (independently, reading only the shared bus) resolves arrival
+  // Step 1: resolve arrivals first so newly assigned tasks get a fresh path
   robots.forEach(r => {
     if (r.path.length === 0 && r.status !== 'waiting') handleArrival(r);
   });
+
+  // Step 2: broadcast the CURRENT intent after arrival/task assignment
+  broadcastIntents(robots);
 
   // Step 3: every robot independently decides move/wait using ONLY neighbor broadcasts
   const decisions = robots.map(r => {

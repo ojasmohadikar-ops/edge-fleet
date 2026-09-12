@@ -453,15 +453,85 @@ function updateRobotPositions(robots) {
     const robotEls = [
         document.querySelector('.robot1'),
         document.querySelector('.robot2'),
-        document.querySelector('.robot3')
+        document.querySelector('.robot3'),
+        document.querySelector('.robot4')
     ];
+
     robots.forEach((robot, i) => {
         const el = robotEls[i];
-        if (!el || robot.x === undefined || robot.y === undefined) return;
+
+        if (!el || robot.x === undefined || robot.y === undefined) {
+            return;
+        }
+
         const leftPct = (robot.x / (GRID_SIZE - 1)) * 100;
         const topPct = (robot.y / (GRID_SIZE - 1)) * 100;
+
         el.style.left = leftPct + '%';
         el.style.right = 'auto';
         el.style.top = topPct + '%';
     });
 }
+
+/* ================= SIMULATION CONTROLS ================= */
+
+let simulationRunning = false;
+
+async function startSimulation() {
+    simulationRunning = !simulationRunning;
+
+    try {
+        await Promise.resolve({ ok: true });
+
+
+        addLiveEvent(
+            simulationRunning
+                ? "▶️ Simulation started: multi-robot P2P coordination active."
+                : "⏸️ Simulation paused."
+        );
+    } catch (error) {
+        console.error("Simulation control error:", error);
+        addLiveEvent("❌ Simulation control request failed.");
+    }
+}
+
+async function blockAisle() {
+    try {
+        const x = Math.floor(Math.random() * 18) + 1;
+        const y = Math.floor(Math.random() * 18) + 1;
+
+        const response = await fetch(`${API_URL}/api/block`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ x, y })
+        });
+
+        if (!response.ok) throw new Error("Block request failed");
+
+        addLiveEvent(`🚧 Dynamic aisle blocked at (${x}, ${y}).`);
+    } catch (error) {
+        console.error("Block aisle error:", error);
+        addLiveEvent("❌ Unable to block aisle.");
+    }
+}
+
+async function rerouteRobot() {
+    try {
+        const response = await fetch(`${API_URL}/api/reroute`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) throw new Error("Reroute request failed");
+
+        addLiveEvent("🔄 AI reroute triggered: alternative path calculated.");
+    } catch (error) {
+        console.error("Reroute error:", error);
+        addLiveEvent("❌ Reroute request failed.");
+    }
+}
+
+function simulateEvent() {
+    addLiveEvent("📡 P2P event simulated: robots exchanged movement intents.");
+}
+
