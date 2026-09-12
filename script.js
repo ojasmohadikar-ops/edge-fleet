@@ -465,23 +465,3 @@ function updateRobotPositions(robots) {
         el.style.top = topPct + '%';
     });
 }
-
-// ================= LIVE ROBOT POSITION UPDATE =================
-const GRID_SIZE = 20;
-
-function updateRobotPositions(robots) {
-    const robotEls = [
-        document.querySelector('.robot1'),
-        document.querySelector('.robot2'),
-        document.querySelector('.robot3')
-    ];
-    robots.forEach((robot, i) => {
-        const el = robotEls[i];
-        if (!el || robot.x === undefined || robot.y === undefined) return;
-        const leftPct = (robot.x / (GRID_SIZE - 1)) * 100;
-        const topPct = (robot.y / (GRID_SIZE - 1)) * 100;
-        el.style.left = leftPct + '%';
-        el.style.right = 'auto';
-        el.style.top = topPct + '%';
-    });
-}
