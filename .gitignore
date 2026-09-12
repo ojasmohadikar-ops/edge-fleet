@@ -4,3 +4,4 @@ backend/node_modules/
 backend/backend.log
 .DS_Store
 *.save
+*.backup
