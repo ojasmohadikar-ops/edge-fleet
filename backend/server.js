@@ -306,20 +306,3 @@ setInterval(() => {
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, '0.0.0.0', () => console.log(`Backend running on port ${PORT}`));
 
-app.get('/debug-blocks', (req, res) => {
-  res.json({ currentBlocks: Array.from(dynamicBlocks) });
-});
-
-app.post('/clear-blocks', (req, res) => {
-  const cleared = Array.from(dynamicBlocks);
-  dynamicBlocks.clear();
-  res.json({ ok: true, clearedBlocks: cleared });
-});
-
-app.get('/debug-robots', (req, res) => {
-  res.json(robots.map(r => ({
-    id: r.id, x: r.x, y: r.y, status: r.status,
-    pathLength: r.path.length, waitTicks: r.waitTicks,
-    currentTask: r.currentTask, battery: r.battery
-  })));
-});
