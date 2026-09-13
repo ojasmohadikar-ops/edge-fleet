@@ -7,6 +7,7 @@
     <title>EdgeFleet - Smart Warehouse</title>
 
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 </head>
 
 <body>
@@ -488,6 +489,30 @@
                     <div>
                         <span>Collisions</span>
                         <strong>0</strong>
+                    </div>
+
+                </div>
+
+                <div class="charts-grid">
+
+                    <div class="chart-card">
+                        <h3>Tasks Completed Over Time</h3>
+                        <canvas id="chartTasks"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Collisions &amp; Deadlocks Over Time</h3>
+                        <canvas id="chartCollisions"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Robot Battery Levels Over Time</h3>
+                        <canvas id="chartBattery"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Efficiency % Trend</h3>
+                        <canvas id="chartEfficiency"></canvas>
                     </div>
 
                 </div>

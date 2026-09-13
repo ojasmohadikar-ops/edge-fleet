@@ -97,6 +97,7 @@ function connectWebSocket() {
                 if (data.robots) {
                     updateRobotCards(data.robots);
                     updateRobotPositions(data.robots);
+                    updateAnalyticsCharts(data);
                 }
 
                 // Tasks
@@ -561,3 +562,120 @@ window.addEventListener('DOMContentLoaded', () => {
         if (appRoot) appRoot.classList.remove('app-hidden');
     }
 });
+
+// ================= ANALYTICS CHARTS =================
+const MAX_HISTORY_POINTS = 30;
+const chartHistory = {
+    labels: [],
+    tasksCompleted: [],
+    collisions: [],
+    deadlocks: [],
+    efficiency: [],
+    batteryByRobot: {}
+};
+
+let chartsInitialized = false;
+let taskChart, collisionChart, batteryChart, efficiencyChart;
+
+function initCharts() {
+    if (chartsInitialized) return;
+    const tasksCanvas = document.getElementById('chartTasks');
+    const collisionsCanvas = document.getElementById('chartCollisions');
+    const batteryCanvas = document.getElementById('chartBattery');
+    const efficiencyCanvas = document.getElementById('chartEfficiency');
+    if (!tasksCanvas || !collisionsCanvas || !batteryCanvas || !efficiencyCanvas) return;
+    if (typeof Chart === 'undefined') return;
+
+    const baseOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        animation: false,
+        plugins: { legend: { display: true, labels: { boxWidth: 10, font: { size: 10 } } } },
+        scales: {
+            x: { ticks: { font: { size: 9 } } },
+            y: { beginAtZero: true, ticks: { font: { size: 9 } } }
+        }
+    };
+
+    taskChart = new Chart(tasksCanvas, {
+        type: 'line',
+        data: { labels: [], datasets: [{ label: 'Tasks Completed', data: [], borderColor: '#065a82', backgroundColor: 'rgba(6,90,130,0.1)', fill: true, tension: 0.3 }] },
+        options: baseOptions
+    });
+
+    collisionChart = new Chart(collisionsCanvas, {
+        type: 'line',
+        data: { labels: [], datasets: [
+            { label: 'Collisions', data: [], borderColor: '#c0392b', backgroundColor: 'rgba(192,57,43,0.1)', fill: true, tension: 0.3 },
+            { label: 'Deadlock Resolutions', data: [], borderColor: '#f2a93b', backgroundColor: 'rgba(242,169,59,0.1)', fill: true, tension: 0.3 }
+        ] },
+        options: baseOptions
+    });
+
+    batteryChart = new Chart(batteryCanvas, {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: baseOptions
+    });
+
+    efficiencyChart = new Chart(efficiencyCanvas, {
+        type: 'line',
+        data: { labels: [], datasets: [{ label: 'Efficiency %', data: [], borderColor: '#02c39a', backgroundColor: 'rgba(2,195,154,0.1)', fill: true, tension: 0.3 }] },
+        options: baseOptions
+    });
+
+    chartsInitialized = true;
+}
+
+function pushHistory(arr, value) {
+    arr.push(value);
+    if (arr.length > MAX_HISTORY_POINTS) arr.shift();
+}
+
+function updateAnalyticsCharts(data) {
+    if (!data.robots) return;
+    initCharts();
+    if (!chartsInitialized) return;
+
+    const timeLabel = new Date().toLocaleTimeString('en-IN', { hour12: false });
+    pushHistory(chartHistory.labels, timeLabel);
+    pushHistory(chartHistory.tasksCompleted, data.tasksCompleted || 0);
+    pushHistory(chartHistory.collisions, data.collisionCount || 0);
+    pushHistory(chartHistory.deadlocks, data.deadlockResolutions || 0);
+
+    const totalBattery = data.robots.reduce((sum, r) => sum + (r.battery || 0), 0);
+    const avgBattery = data.robots.length ? totalBattery / data.robots.length : 0;
+    const baselineTime = 100;
+    const estEfficiency = data.tasksCompleted ? Math.min(99, ((data.tasksCompleted * 5) / baselineTime) * 24) : 0;
+    pushHistory(chartHistory.efficiency, Math.round(estEfficiency));
+
+    data.robots.forEach(r => {
+        const key = `R${r.id + 1}`;
+        if (!chartHistory.batteryByRobot[key]) chartHistory.batteryByRobot[key] = [];
+        pushHistory(chartHistory.batteryByRobot[key], Math.round(r.battery));
+    });
+
+    taskChart.data.labels = chartHistory.labels;
+    taskChart.data.datasets[0].data = chartHistory.tasksCompleted;
+    taskChart.update();
+
+    collisionChart.data.labels = chartHistory.labels;
+    collisionChart.data.datasets[0].data = chartHistory.collisions;
+    collisionChart.data.datasets[1].data = chartHistory.deadlocks;
+    collisionChart.update();
+
+    const batteryColors = ['#00d4ff', '#a878ff', '#ffb84d', '#02c39a'];
+    batteryChart.data.labels = chartHistory.labels;
+    batteryChart.data.datasets = Object.keys(chartHistory.batteryByRobot).map((key, i) => ({
+        label: key,
+        data: chartHistory.batteryByRobot[key],
+        borderColor: batteryColors[i % batteryColors.length],
+        fill: false,
+        tension: 0.3
+    }));
+    batteryChart.update();
+
+    efficiencyChart.data.labels = chartHistory.labels;
+    efficiencyChart.data.datasets[0].data = chartHistory.efficiency;
+    efficiencyChart.update();
+}
