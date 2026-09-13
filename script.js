@@ -438,6 +438,16 @@ function showPage(pageId) {
         console.warn('No page found with id:', pageId);
     }
 
+    // Analytics charts need a resize/redraw once their canvas becomes visible
+    if (pageId === 'analytics') {
+        initCharts();
+        setTimeout(() => {
+            [taskChart, collisionChart, batteryChart, efficiencyChart].forEach(c => {
+                if (c) { c.resize(); c.update(); }
+            });
+        }, 50);
+    }
+
     // Update nav button highlight
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.remove('active');
