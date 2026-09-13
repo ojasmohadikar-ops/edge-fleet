@@ -8,6 +8,9 @@ app.use(express.static(path.join(__dirname, '..')));
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const NUM_ROBOTS = 4, GRID_SIZE = 20, TICK_MS = 300, STUCK_LIMIT = 3, NUM_TASKS = 6;
+const CHARGE_STATION = { x: 1, y: 1 };
+const BATTERY_LOW_THRESHOLD = 20;
+const CHARGE_RATE = 1.5;
 const baseGrid = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
 for (let i = 5; i < 15; i++) { baseGrid[8][i] = 1; baseGrid[12][i] = 1; }
 baseGrid[8][10] = 0; baseGrid[12][10] = 0;
@@ -133,9 +136,23 @@ function decideMoveDecentralized(robot, next) {
 function moveRobots() {
   robots.forEach(r => replanIfPathBlocked(r));
 
+  // Battery check — send low-battery robots to the charging station
+  robots.forEach(r => {
+    if (r.battery <= BATTERY_LOW_THRESHOLD && r.status !== 'charging' && r.status !== 'headingToCharge') {
+      r.status = 'headingToCharge';
+      r.path = astar({ x: r.x, y: r.y }, CHARGE_STATION);
+      r.path.shift();
+    }
+  });
+
   // Step 1: resolve arrivals first so newly assigned tasks get a fresh path
   robots.forEach(r => {
-    if (r.path.length === 0 && r.status !== 'waiting') handleArrival(r);
+    if (r.status === 'headingToCharge' && r.path.length === 0) {
+      r.status = 'charging';
+      r.chargeTicks = 0;
+      return;
+    }
+    if (r.path.length === 0 && r.status !== 'waiting' && r.status !== 'charging' && r.status !== 'headingToCharge') handleArrival(r);
   });
 
   // Step 2: broadcast the CURRENT intent after arrival/task assignment
@@ -173,6 +190,25 @@ function moveRobots() {
         r.status = 'rerouted';
       } else {
         r.status = 'waiting';
+      }
+    }
+  });
+
+  // Charging tick — robots at the station recharge gradually, then resume their task
+  robots.forEach(r => {
+    if (r.status === 'charging') {
+      r.chargeTicks = (r.chargeTicks || 0) + 1;
+      r.battery = Math.min(100, r.battery + CHARGE_RATE);
+      if (r.battery >= 100) {
+        const task = tasks.find(t => t.id === r.currentTask);
+        if (task) {
+          const target = task.stage === 'to_pickup' ? task.pickup : task.drop;
+          r.path = astar({ x: r.x, y: r.y }, target);
+          r.path.shift();
+          r.status = r.path.length > 0 ? 'moving' : 'idle';
+        } else {
+          assignTaskToRobot(r);
+        }
       }
     }
   });

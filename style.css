@@ -831,3 +831,18 @@ td {
 .app-hidden {
     display: none !important;
 }
+
+/* ================= CHARGING STATION ================= */
+.charge-station {
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    background: #02c39a;
+    color: #071018;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    z-index: 4;
+    box-shadow: 0 0 0 2px rgba(2,195,154,0.35);
+}
