@@ -644,7 +644,6 @@ function pushHistory(arr, value) {
 
 function updateAnalyticsCharts(data) {
     if (!data.robots) return;
-    initCharts();
     if (!chartsInitialized) return;
 
     const timeLabel = new Date().toLocaleTimeString('en-IN', { hour12: false });
