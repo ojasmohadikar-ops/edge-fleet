@@ -315,3 +315,11 @@ app.post('/clear-blocks', (req, res) => {
   dynamicBlocks.clear();
   res.json({ ok: true, clearedBlocks: cleared });
 });
+
+app.get('/debug-robots', (req, res) => {
+  res.json(robots.map(r => ({
+    id: r.id, x: r.x, y: r.y, status: r.status,
+    pathLength: r.path.length, waitTicks: r.waitTicks,
+    currentTask: r.currentTask, battery: r.battery
+  })));
+});
