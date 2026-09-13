@@ -11,7 +11,33 @@
 
 <body>
 
-    <div class="app">
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-box">EF</div>
+                <div>
+                    <h2>EdgeFleet</h2>
+                    <p>Smart Warehouse</p>
+                </div>
+            </div>
+            <h3 class="login-title">Fleet Operator Login</h3>
+            <p class="login-subtitle">Decentralized Edge-AI Fleet Coordination</p>
+
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <label>Operator ID</label>
+                <input type="text" id="loginUser" placeholder="admin" required>
+
+                <label>Password</label>
+                <input type="password" id="loginPass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required>
+
+                <button type="submit" class="login-btn">Sign In</button>
+                <p class="login-hint">Demo credentials: <b>admin</b> / <b>admin123</b></p>
+            </form>
+        </div>
+    </div>
+
+    <div class="app app-hidden" id="appRoot">
 
         <!-- SIDEBAR -->
         <aside class="sidebar">

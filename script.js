@@ -535,3 +535,29 @@ function simulateEvent() {
     addLiveEvent("📡 P2P event simulated: robots exchanged movement intents.");
 }
 
+
+// ================= LOGIN HANDLING =================
+function handleLogin(event) {
+    event.preventDefault();
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+
+    if (user === 'admin' && pass === 'admin123') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('appRoot').classList.remove('app-hidden');
+        sessionStorage.setItem('edgefleet_logged_in', 'true');
+    } else {
+        alert('Invalid credentials. Use admin / admin123');
+    }
+    return false;
+}
+
+// Auto-skip login if already logged in this session
+window.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('edgefleet_logged_in') === 'true') {
+        const loginScreen = document.getElementById('loginScreen');
+        const appRoot = document.getElementById('appRoot');
+        if (loginScreen) loginScreen.style.display = 'none';
+        if (appRoot) appRoot.classList.remove('app-hidden');
+    }
+});
