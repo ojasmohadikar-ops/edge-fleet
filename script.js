@@ -598,7 +598,7 @@ function initCharts() {
 
     const baseOptions = {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         animation: false,
         plugins: { legend: { display: true, labels: { boxWidth: 10, font: { size: 10 } } } },
         scales: {

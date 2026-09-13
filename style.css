@@ -859,17 +859,27 @@ td {
     background: white;
     border: 1px solid #d7e3ea;
     border-radius: 10px;
-    padding: 18px;
+    padding: 16px 18px;
 }
 
 .chart-card h3 {
-    margin: 0 0 12px 0;
-    font-size: 14px;
+    margin: 0 0 10px 0;
+    font-size: 13.5px;
     color: #10243e;
 }
 
-.chart-card canvas {
-    max-height: 220px;
+.chart-wrap {
+    position: relative;
+    height: 220px;
+    width: 100%;
+}
+
+.chart-wrap canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 @media (max-width: 900px) {
