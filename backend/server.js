@@ -305,3 +305,13 @@ setInterval(() => {
 }, TICK_MS);
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, '0.0.0.0', () => console.log(`Backend running on port ${PORT}`));
+
+app.get('/debug-blocks', (req, res) => {
+  res.json({ currentBlocks: Array.from(dynamicBlocks) });
+});
+
+app.post('/clear-blocks', (req, res) => {
+  const cleared = Array.from(dynamicBlocks);
+  dynamicBlocks.clear();
+  res.json({ ok: true, clearedBlocks: cleared });
+});
