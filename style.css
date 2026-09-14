@@ -1371,8 +1371,8 @@ tr:hover {
     border: 2px solid rgba(255,255,255,0.8) !important;
     box-shadow: 0 0 14px rgba(34,197,94,0.65) !important;
 
-    left: 30% !important;
-    top: 25% !important;
+    left: 30%;
+    top: 25%;
     right: auto !important;
     bottom: auto !important;
 
