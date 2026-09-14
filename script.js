@@ -472,6 +472,23 @@ function updateRobotPositions(robots) {
         document.querySelector('.robot4')
     ];
 
+    // Ensure R4 has the same visual base class as the other robots
+    const r4 = document.querySelector('.robot4');
+    if (r4) {
+        r4.classList.add('robot');
+        r4.style.width = '35px';
+        r4.style.height = '35px';
+        r4.style.display = 'flex';
+        r4.style.alignItems = 'center';
+        r4.style.justifyContent = 'center';
+        r4.style.borderRadius = '8px';
+        r4.style.background = '#22c55e';
+        r4.style.color = '#06130a';
+        r4.style.border = '2px solid rgba(255,255,255,0.8)';
+        r4.style.boxShadow = '0 0 14px rgba(34,197,94,0.65)';
+        r4.style.zIndex = '50';
+    }
+
     const simEls = [
         document.querySelector('.sim-r1'),
         document.querySelector('.sim-r2'),
