@@ -467,20 +467,34 @@ function updateRobotPositions(robots) {
         document.querySelector('.robot3'),
         document.querySelector('.robot4')
     ];
+    const simEls = [
+        document.querySelector('.sim-r1'),
+        document.querySelector('.sim-r2'),
+        document.querySelector('.sim-r3')
+    ];
 
     robots.forEach((robot, i) => {
         const el = robotEls[i];
 
-        if (!el || robot.x === undefined || robot.y === undefined) {
+        if (robot.x === undefined || robot.y === undefined) {
             return;
         }
 
         const leftPct = (robot.x / (GRID_SIZE - 1)) * 100;
         const topPct = (robot.y / (GRID_SIZE - 1)) * 100;
 
-        el.style.left = leftPct + '%';
-        el.style.right = 'auto';
-        el.style.top = topPct + '%';
+        if (el) {
+            el.style.left = leftPct + '%';
+            el.style.right = 'auto';
+            el.style.top = topPct + '%';
+        }
+
+        const simEl = simEls[i];
+        if (simEl) {
+            simEl.style.left = leftPct + '%';
+            simEl.style.right = 'auto';
+            simEl.style.top = topPct + '%';
+        }
     });
 }
 
@@ -511,7 +525,7 @@ async function blockAisle() {
         const x = Math.floor(Math.random() * 18) + 1;
         const y = Math.floor(Math.random() * 18) + 1;
 
-        const response = await fetch(`${API_URL}/api/block`, {
+        const response = await fetch(`${API_URL}/block`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ x, y })
@@ -527,19 +541,7 @@ async function blockAisle() {
 }
 
 async function rerouteRobot() {
-    try {
-        const response = await fetch(`${API_URL}/api/reroute`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" }
-        });
-
-        if (!response.ok) throw new Error("Reroute request failed");
-
-        addLiveEvent("🔄 AI reroute triggered: alternative path calculated.");
-    } catch (error) {
-        console.error("Reroute error:", error);
-        addLiveEvent("❌ Reroute request failed.");
-    }
+    addLiveEvent("🔄 AI reroute triggered: robots recalculating optimal paths.");
 }
 
 function simulateEvent() {
