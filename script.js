@@ -946,3 +946,19 @@ function tryDemo() {
     }
 }
 
+
+// ================= FORCE LOGIN-FIRST ON PAGE LOAD =================
+document.addEventListener('DOMContentLoaded', () => {
+    const loginScreen = document.getElementById('loginScreen');
+    const registerScreen = document.getElementById('registerScreen');
+    const setupScreen = document.getElementById('setupScreen');
+    const appRoot = document.getElementById('appRoot');
+
+    if (loginScreen) {
+        loginScreen.style.display = 'flex';
+        loginScreen.classList.remove('app-hidden');
+    }
+    if (registerScreen) registerScreen.classList.add('app-hidden');
+    if (setupScreen) setupScreen.classList.add('app-hidden');
+    if (appRoot) appRoot.classList.add('app-hidden');
+});
