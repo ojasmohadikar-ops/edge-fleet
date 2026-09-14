@@ -10,7 +10,7 @@ const wss = new WebSocketServer({ server });
 let NUM_ROBOTS = 4;
 let GRID_SIZE = 20;
 const TICK_MS = 300, STUCK_LIMIT = 3, NUM_TASKS = 6;
-let simulationRunning = false;
+let simulationRunning = true;
 let baseGrid = [];
 const CHARGE_STATION = { x: 1, y: 1 };
 const BATTERY_LOW_THRESHOLD = 20;
