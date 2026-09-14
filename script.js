@@ -689,6 +689,13 @@ function handleLogin(event) {
     localStorage.setItem("edgeFleetOperatorName", account.userId);
     localStorage.setItem("edgeFleetWarehouse", account.warehouse || "EdgeFleet Smart Warehouse");
 
+    // Login ke baad directly main dashboard open karo
+    const setupScreen = document.getElementById("setupScreen");
+    if (setupScreen) {
+        setupScreen.style.display = "none";
+        setupScreen.classList.add("app-hidden");
+    }
+
     // Restore this user's saved setup
     if (account.setup) {
         localStorage.setItem("edgeFleetSetup", JSON.stringify(account.setup));
@@ -702,6 +709,13 @@ function handleLogin(event) {
     if (typeof displayFleetSetup === "function") {
         setTimeout(displayFleetSetup, 100);
     }
+
+    // DIRECT LOGIN -> DASHBOARD
+    setTimeout(() => {
+        if (typeof showPage === "function") {
+            showPage("dashboard");
+        }
+    }, 50);
 
     return false;
 }
