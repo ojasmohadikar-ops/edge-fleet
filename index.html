@@ -34,6 +34,9 @@
 
                 <button type="submit" class="login-btn">Sign In</button>
                 <p class="login-hint">Demo credentials: <b>admin</b> / <b>admin123</b></p>
+                <button type="button" class="register-link-btn" onclick="showRegister()">
+                    Create New Account
+                </button>
             </form>
         </div>
     </div>
@@ -103,6 +106,9 @@
 
                 <button class="nav-btn" onclick="showPage('analytics')">
                     📊 Analytics
+                </button>
+                <button class="nav-btn" onclick="showPage('setup')">
+                    ⚙️ Setup
                 </button>
 
             </nav>
@@ -571,6 +577,60 @@
         </table>
     </div>
 </section>
+
+            <!-- SETUP PAGE -->
+            <section id="setup" class="page">
+                <div class="page-header">
+                    <h2>⚙️ Fleet Setup</h2>
+                    <p>Configure and save warehouse and robot information.</p>
+                </div>
+
+                <div class="setup-grid">
+                    <div class="chart-card">
+                        <h3>🏭 Warehouse Details</h3>
+
+                        <label>Warehouse Name</label>
+                        <input type="text" id="warehouseName" placeholder="Smart Warehouse">
+
+                        <label>Warehouse Location</label>
+                        <input type="text" id="warehouseLocation" placeholder="Nagpur">
+
+                        <label>Warehouse Grid Size</label>
+                        <input type="number" id="warehouseGrid" min="10" max="40" value="20">
+
+                        <label>Number of Robots</label>
+                        <input type="number" id="warehouseRobots" min="1" max="8" value="3">
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>🤖 Robot Details</h3>
+
+                        <label>Robot ID</label>
+                        <input type="text" id="robotId" placeholder="R1">
+
+                        <label>Robot Name</label>
+                        <input type="text" id="robotName" placeholder="AMR-01">
+
+                        <label>Robot Type</label>
+                        <input type="text" id="robotType" placeholder="Autonomous Mobile Robot">
+
+                        <label>Battery Capacity (%)</label>
+                        <input type="number" id="robotBattery" min="0" max="100" value="100">
+
+                        <button type="button" class="login-btn" onclick="saveFleetSetup()">
+                            💾 Save Setup
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chart-card" style="margin-top:20px;">
+                    <h3>📋 Saved Configuration</h3>
+                    <div id="savedSetupInfo">
+                        <p>No setup information saved yet.</p>
+                    </div>
+                </div>
+            </section>
+
 </main>
 
     </div>

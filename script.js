@@ -739,3 +739,72 @@ function updateAnalyticsCharts(data) {
     efficiencyChart.data.datasets[0].data = chartHistory.efficiency;
     efficiencyChart.update();
 }
+
+/* ================= REGISTER + SETUP ================= */
+
+function showRegister() {
+    const user = prompt("Create Operator ID:");
+    if (!user) return;
+
+    const pass = prompt("Create Password:");
+    if (!pass) return;
+
+    localStorage.setItem("edgeFleetUser", user);
+    localStorage.setItem("edgeFleetPass", pass);
+
+    alert("Registration successful! You can now sign in.");
+}
+
+function saveFleetSetup() {
+    const setup = {
+        warehouseName: document.getElementById("warehouseName")?.value || "",
+        warehouseLocation: document.getElementById("warehouseLocation")?.value || "",
+        warehouseGrid: document.getElementById("warehouseGrid")?.value || "",
+        warehouseRobots: document.getElementById("warehouseRobots")?.value || "",
+        robotId: document.getElementById("robotId")?.value || "",
+        robotName: document.getElementById("robotName")?.value || "",
+        robotType: document.getElementById("robotType")?.value || "",
+        robotBattery: document.getElementById("robotBattery")?.value || ""
+    };
+
+    localStorage.setItem("edgeFleetSetup", JSON.stringify(setup));
+    displayFleetSetup();
+    alert("Setup saved successfully!");
+}
+
+function displayFleetSetup() {
+    const box = document.getElementById("savedSetupInfo");
+    if (!box) return;
+
+    const raw = localStorage.getItem("edgeFleetSetup");
+
+    if (!raw) {
+        box.innerHTML = "<p>No setup information saved yet.</p>";
+        return;
+    }
+
+    const s = JSON.parse(raw);
+
+    box.innerHTML = `
+        <div class="setup-saved-grid">
+            <div>
+                <strong>🏭 Warehouse</strong>
+                <p>Name: ${s.warehouseName || "-"}</p>
+                <p>Location: ${s.warehouseLocation || "-"}</p>
+                <p>Grid: ${s.warehouseGrid || "-"}</p>
+                <p>Robots: ${s.warehouseRobots || "-"}</p>
+            </div>
+
+            <div>
+                <strong>🤖 Robot</strong>
+                <p>ID: ${s.robotId || "-"}</p>
+                <p>Name: ${s.robotName || "-"}</p>
+                <p>Type: ${s.robotType || "-"}</p>
+                <p>Battery: ${s.robotBattery || 0}%</p>
+            </div>
+        </div>
+    `;
+}
+
+document.addEventListener("DOMContentLoaded", displayFleetSetup);
+
