@@ -1247,3 +1247,31 @@ tr:hover {
     font-size: 11px;
 }
 
+
+/* ================= SMOOTH AMR MOVEMENT ================= */
+
+.robot1,
+.robot2,
+.robot3,
+.robot4,
+.sim-r1,
+.sim-r2,
+.sim-r3 {
+    transition:
+        left 850ms cubic-bezier(0.22, 1, 0.36, 1),
+        top 850ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 250ms ease !important;
+
+    will-change: left, top, transform;
+}
+
+.robot1:hover,
+.robot2:hover,
+.robot3:hover,
+.robot4:hover,
+.sim-r1:hover,
+.sim-r2:hover,
+.sim-r3:hover {
+    transform: scale(1.08);
+}
+

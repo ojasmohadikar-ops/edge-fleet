@@ -471,6 +471,7 @@ function updateRobotPositions(robots) {
         document.querySelector('.robot3'),
         document.querySelector('.robot4')
     ];
+
     const simEls = [
         document.querySelector('.sim-r1'),
         document.querySelector('.sim-r2'),
@@ -479,26 +480,27 @@ function updateRobotPositions(robots) {
 
     robots.forEach((robot, i) => {
         const el = robotEls[i];
+        const simEl = simEls[i];
 
-        if (robot.x === undefined || robot.y === undefined) {
-            return;
-        }
+        if (robot.x === undefined || robot.y === undefined) return;
 
         const leftPct = (robot.x / (GRID_SIZE - 1)) * 100;
         const topPct = (robot.y / (GRID_SIZE - 1)) * 100;
 
-        if (el) {
-            el.style.left = leftPct + '%';
-            el.style.right = 'auto';
-            el.style.top = topPct + '%';
-        }
+        [el, simEl].forEach(target => {
+            if (!target) return;
 
-        const simEl = simEls[i];
-        if (simEl) {
-            simEl.style.left = leftPct + '%';
-            simEl.style.right = 'auto';
-            simEl.style.top = topPct + '%';
-        }
+            target.style.left = leftPct + '%';
+            target.style.top = topPct + '%';
+            target.style.right = 'auto';
+
+            target.style.transition =
+                'left 850ms cubic-bezier(0.22, 1, 0.36, 1), ' +
+                'top 850ms cubic-bezier(0.22, 1, 0.36, 1), ' +
+                'transform 250ms ease';
+
+            target.style.willChange = 'left, top, transform';
+        });
     });
 }
 
