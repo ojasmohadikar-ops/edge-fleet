@@ -1015,3 +1015,204 @@ td {
     }
 }
 
+
+/* ================= EDGE-FLEET PROFESSIONAL AI THEME ================= */
+
+html,
+body {
+    background:
+        radial-gradient(circle at 15% 15%, rgba(0, 212, 255, 0.10), transparent 28%),
+        radial-gradient(circle at 85% 80%, rgba(0, 150, 255, 0.08), transparent 30%),
+        linear-gradient(rgba(8, 18, 32, 0.96), rgba(5, 12, 23, 0.98)),
+        repeating-linear-gradient(
+            0deg,
+            rgba(56, 189, 248, 0.035) 0px,
+            rgba(56, 189, 248, 0.035) 1px,
+            transparent 1px,
+            transparent 42px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgba(56, 189, 248, 0.035) 0px,
+            rgba(56, 189, 248, 0.035) 1px,
+            transparent 1px,
+            transparent 42px
+        ) !important;
+    color: #e6f7ff;
+}
+
+/* Professional login / registration background */
+
+.login-screen {
+    background:
+        radial-gradient(circle at 50% 20%, rgba(0, 212, 255, 0.14), transparent 32%),
+        radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.08), transparent 30%),
+        linear-gradient(135deg, #050d18 0%, #081525 50%, #030912 100%) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(56,189,248,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56,189,248,0.035) 1px, transparent 1px);
+    background-size: 45px 45px;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
+    pointer-events: none;
+}
+
+.login-card,
+.register-card {
+    position: relative;
+    z-index: 2;
+    background: rgba(8, 20, 35, 0.88) !important;
+    border: 1px solid rgba(56, 189, 248, 0.20) !important;
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.55),
+        0 0 45px rgba(0, 212, 255, 0.07),
+        inset 0 1px 0 rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.login-title {
+    color: #f0faff !important;
+    letter-spacing: 0.3px;
+}
+
+.login-subtitle {
+    color: #8da9bb !important;
+}
+
+.login-card label,
+.register-card label {
+    color: #c7e8f7 !important;
+}
+
+.login-card input,
+.register-card input {
+    background: rgba(3, 12, 23, 0.82) !important;
+    border: 1px solid rgba(100, 160, 190, 0.25) !important;
+    color: #f4fbff !important;
+}
+
+.login-card input:focus,
+.register-card input:focus {
+    border-color: #00d4ff !important;
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.10) !important;
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #00b8e6, #0077b6) !important;
+    border: 1px solid rgba(125, 230, 255, 0.35) !important;
+    color: white !important;
+    box-shadow: 0 8px 24px rgba(0, 180, 230, 0.18);
+    transition: all 0.2s ease;
+}
+
+.login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.28);
+}
+
+.register-link-btn {
+    color: #54d9ff !important;
+}
+
+.register-link-btn:hover {
+    color: #a5edff !important;
+}
+
+/* Dashboard glass cards */
+
+.chart-card,
+.stat-card,
+.card,
+.panel {
+    background: rgba(8, 20, 35, 0.72);
+    border-color: rgba(56, 189, 248, 0.12);
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.025);
+    backdrop-filter: blur(10px);
+}
+
+/* Professional cyan accent */
+
+h1, h2, h3 {
+    color: #e9faff;
+}
+
+.page-header p {
+    color: #89a8bb;
+}
+
+/* Sidebar */
+
+.sidebar {
+    background: rgba(4, 13, 24, 0.94) !important;
+    border-right: 1px solid rgba(56, 189, 248, 0.10);
+    backdrop-filter: blur(15px);
+}
+
+.nav-btn {
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(0, 212, 255, 0.07) !important;
+    color: #7de7ff !important;
+}
+
+.nav-btn.active {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 212, 255, 0.13),
+        rgba(0, 212, 255, 0.035)
+    ) !important;
+    color: #62ddff !important;
+    border-left: 2px solid #00d4ff;
+}
+
+/* Tables */
+
+table {
+    border-color: rgba(56, 189, 248, 0.10);
+}
+
+th {
+    background: rgba(0, 212, 255, 0.055);
+    color: #a9eaff;
+}
+
+td {
+    border-color: rgba(56, 189, 248, 0.07);
+}
+
+tr:hover {
+    background: rgba(0, 212, 255, 0.035);
+}
+
+/* Subtle scrollbar */
+
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #06101c;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #17445a;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00a9d4;
+}
+
