@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EdgeFleet - Smart Warehouse</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-box">EF</div>
+                <div>
+                    <h2>EdgeFleet</h2>
+                    <p>Smart Warehouse</p>
+                </div>
+            </div>
+            <h3 class="login-title">Fleet Operator Login</h3>
+            <p class="login-subtitle">Decentralized Edge-AI Fleet Coordination</p>
+
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <label>Operator ID</label>
+                <input type="text" id="loginUser" placeholder="admin" required>
+
+                <label>Password</label>
+                <input type="password" id="loginPass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required>
+
+                <button type="submit" class="login-btn">Sign In</button>
+                <p class="login-hint">Demo credentials: <b>admin</b> / <b>admin123</b></p>
+                <button type="button" class="register-link-btn" onclick="showRegisterPage()">
+                    Create New Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+    
+    <!-- SETUP SCREEN -->
+    
+    <!-- PROFESSIONAL REGISTER SCREEN -->
+    <div id="registerScreen" class="login-screen app-hidden">
+        <div class="login-card register-card">
+            <div class="brand-logo">EF</div>
+            <h3 class="login-title">Create Fleet Account</h3>
+            <p class="login-subtitle">Register your operator profile to access EdgeFleet</p>
+
+            <form id="registerForm" onsubmit="return handleRegister(event)">
+
+                <div class="register-row">
+                    <div>
+                        <label>Full Name</label>
+                        <input type="text" id="registerName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div>
+                        <label>Operator ID</label>
+                        <input type="text" id="registerUser" placeholder="e.g. operator01" required>
+                    </div>
+                </div>
+
+                <label>Email Address</label>
+                <input type="email" id="registerEmail" placeholder="operator@example.com" required>
+
+                <label>Warehouse Name</label>
+                <input type="text" id="registerWarehouse" placeholder="Smart Warehouse" required>
+
+                <div class="register-row">
+                    <div>
+                        <label>Password</label>
+                        <input type="password" id="registerPass" placeholder="Create password" required>
+                    </div>
+
+                    <div>
+                        <label>Confirm Password</label>
+                        <input type="password" id="registerConfirm" placeholder="Confirm password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Create Account & Continue →
+                </button>
+
+                <button type="button" class="register-link-btn" onclick="showLoginPage()">
+                    ← Back to Sign In
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <div id="setupScreen" class="login-screen app-hidden">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-box">EF</div>
+                <div>
+                    <h2>EdgeFleet</h2>
+                    <p>Smart Warehouse</p>
+                </div>
+            </div>
+            <h3 class="login-title">Configure Your Warehouse</h3>
+            <p class="login-subtitle">Set fleet size and warehouse dimensions to begin</p>
+
+            <form id="setupForm" onsubmit="return handleSetup(event)">
+                <label>Warehouse Grid Size (10-40)</label>
+                <input type="number" id="setupGridSize" min="10" max="40" value="20" required>
+
+                <label>Number of Robots (1-8)</label>
+                <input type="number" id="setupNumRobots" min="1" max="8" value="4" required>
+
+                <button type="submit" class="login-btn">Deploy Fleet &amp; Start Simulation</button>
+                <p class="login-hint">Robots will begin moving immediately after setup.</p>
+            </form>
+        </div>
+    </div>
+
+    <div class="app app-hidden" id="appRoot">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-box">EF</div>
+
+                <div>
+                    <h2>EdgeFleet</h2>
+                    <p>Smart Warehouse</p>
+                </div>
+            </div>
+
+            <nav>
+
+                <button class="nav-btn active" onclick="showPage('dashboard')">
+                    🏠 Dashboard
+                </button>
+
+                <button class="nav-btn" onclick="showPage('simulation')">
+                    🤖 Simulation
+                </button>
+
+                <button class="nav-btn" onclick="showPage('robots')">
+                    🚚 Robot Fleet
+                </button>
+
+                <button class="nav-btn" onclick="showPage('tasks')">
+                    📦 Task Allocation
+                </button>
+
+                <button class="nav-btn" onclick="showPage('events')">
+                    ⚠️ Conflicts & Events
+                </button>
+
+                <button class="nav-btn" onclick="showPage('analytics')">
+                    📊 Analytics
+                </button>
+                <button class="nav-btn" onclick="showPage('setup')">
+                    ⚙️ Setup
+                </button>
+
+            </nav>
+
+            <div class="system-status">
+                <span class="online-dot"></span>
+
+                <div>
+                    <b>System Online</b>
+                    <small>Edge Network Active</small>
+                </div>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- TOP BAR -->
+            <header class="topbar">
+
+                <div>
+                    <h1 id="page-title">Fleet Dashboard</h1>
+
+                    <p>
+                        Decentralized Edge-AI Fleet Coordination
+                    </p>
+                </div>
+
+                <div class="network-status">
+                    <span class="online-dot"></span>
+                    P2P Network Connected
+                </div>
+
+            </header>
+
+
+            <!-- DASHBOARD -->
+            <section id="dashboard" class="page active">
+
+                <div class="stats">
+
+                    <div class="stat-card">
+                        <span>🤖 Active Robots</span>
+                        <h2>3</h2>
+                        <small>All operational</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>📦 Active Tasks</span>
+                        <h2>8</h2>
+                        <small>Currently assigned</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>⚡ Efficiency</span>
+                        <h2>24%</h2>
+                        <small>Better than baseline</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>💥 Collisions</span>
+                        <h2>0</h2>
+                        <small>Target: Zero</small>
+                    </div>
+
+                </div>
+
+
+                <div class="content-grid">
+
+                    <!-- WAREHOUSE -->
+                    <div class="panel warehouse-panel">
+
+                        <div class="panel-title">
+                            <div>
+                                <h2>Live Warehouse</h2>
+                                <p>Real-time robot movement</p>
+                            </div>
+
+                            <span class="live">● LIVE</span>
+                        </div>
+
+                        <div class="warehouse">
+
+                            <div class="shelf s1"></div>
+                            <div class="shelf s2"></div>
+                            <div class="shelf s3"></div>
+                            <div class="shelf s4"></div>
+
+                            <div class="pickup">
+                                PICKUP
+                            </div>
+
+                            <div class="delivery">
+                                DELIVERY
+                            </div>
+
+                            <div class="charge-station">
+                                CHARGE
+                            </div>
+
+                            <div class="robot robot1">R1</div>
+                            <div class="robot robot2">R2</div>
+                            <div class="robot robot3">R3</div>
+<div class="robot robot4">R4</div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ROBOT STATUS -->
+                    <div class="panel">
+
+                        <div class="panel-title">
+                            <div>
+                                <h2>Robot Status</h2>
+                                <p>Edge nodes</p>
+                            </div>
+                        </div>
+
+                        <div class="robot-status">
+
+                            <div class="robot-row">
+                                <div class="robot-id">R1</div>
+
+                                <div>
+                                    <b>Robot 01</b>
+                                    <p>Moving • Task T-104</p>
+                                </div>
+
+                                <strong>86%</strong>
+                            </div>
+
+
+                            <div class="robot-row">
+                                <div class="robot-id">R2</div>
+
+                                <div>
+                                    <b>Robot 02</b>
+                                    <p>Moving • Task T-105</p>
+                                </div>
+
+                                <strong>72%</strong>
+                            </div>
+
+
+                            <div class="robot-row">
+                                <div class="robot-id">R3</div>
+
+                                <div>
+                                    <b>Robot 03</b>
+                                    <p>Waiting • Intersection</p>
+                                </div>
+
+                                <strong>91%</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EVENTS -->
+                <div class="panel events">
+
+                    <div class="panel-title">
+
+                        <div>
+                            <h2>Live Events</h2>
+                            <p>Decentralized coordination activity</p>
+                        </div>
+
+                        <button onclick="simulateEvent()" class="action-btn">
+                            + Simulate Event
+                        </button>
+
+                    </div>
+
+                    <div id="event-list">
+
+                        <div class="event">
+                            <span>19:24:11</span>
+                            <b>R1</b>
+                            entered intersection
+                            <label>SAFE</label>
+                        </div>
+
+                        <div class="event">
+                            <span>19:23:54</span>
+                            <b>R2</b>
+                            received priority token
+                            <label>P2P</label>
+                        </div>
+
+                        <div class="event">
+                            <span>19:23:31</span>
+                            <b>R3</b>
+                            waiting for intersection
+                            <label>WAIT</label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SIMULATION -->
+            <section id="simulation" class="page">
+
+                <div class="page-header">
+                    <h2>🤖 Warehouse Simulation</h2>
+                    <p>Dynamic multi-agent robot environment</p>
+                </div>
+
+                <div class="control-panel">
+
+                    <button onclick="startSimulation()">
+                        ▶ Start Simulation
+                    </button>
+
+                    <button onclick="blockAisle()">
+                        🚧 Block Aisle
+                    </button>
+
+                    <button onclick="rerouteRobot()">
+                        🔄 Re-route Robot
+                    </button>
+
+                </div>
+
+                <div class="simulation-area">
+
+                    <div class="sim-robot sim-r1">R1</div>
+                    <div class="sim-robot sim-r2">R2</div>
+                    <div class="sim-robot sim-r3">R3</div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ROBOTS -->
+            <section id="robots" class="page">
+
+                <div class="page-header">
+
+                    <h2>🚚 Robot Fleet</h2>
+
+                    <p>
+                        Monitor all autonomous mobile robots
+                    </p>
+
+                </div>
+
+                <div class="robot-cards">
+
+                    <div class="robot-card">
+                        <h2>Robot 01</h2>
+                        <p>Status: <b>Moving</b></p>
+                        <p>Battery: 86%</p>
+                        <p>Task: T-104</p>
+                        <p>Position: A3</p>
+                    </div>
+
+                    <div class="robot-card">
+                        <h2>Robot 02</h2>
+                        <p>Status: <b>Moving</b></p>
+                        <p>Battery: 72%</p>
+                        <p>Task: T-105</p>
+                        <p>Position: B4</p>
+                    </div>
+
+                    <div class="robot-card">
+                        <h2>Robot 03</h2>
+                        <p>Status: <b>Waiting</b></p>
+                        <p>Battery: 91%</p>
+                        <p>Task: T-106</p>
+                        <p>Position: C2</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- TASKS -->
+            <section id="tasks" class="page">
+
+                <div class="page-header">
+
+                    <h2>📦 Task Allocation</h2>
+
+                    <p>
+                        Decentralized task assignment
+                    </p>
+
+                </div>
+
+                <div class="table-panel">
+
+                    <table>
+
+                        <tr>
+                            <th>Task</th>
+                            <th>Robot</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                        </tr>
+
+                        <tr>
+                            <td>T-104</td>
+                            <td>R1</td>
+                            <td>HIGH</td>
+                            <td>Moving</td>
+                        </tr>
+
+                        <tr>
+                            <td>T-105</td>
+                            <td>R2</td>
+                            <td>MEDIUM</td>
+                            <td>Moving</td>
+                        </tr>
+
+                        <tr>
+                            <td>T-106</td>
+                            <td>R3</td>
+                            <td>HIGH</td>
+                            <td>Waiting</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- EVENTS -->
+            <section id="events" class="page">
+
+                <div class="page-header">
+
+                    <h2>⚠️ Conflicts & Events</h2>
+
+                    <p>
+                        Collision avoidance and deadlock resolution
+                    </p>
+
+                </div>
+
+                <div class="event-box">
+                    <h2>✅ Zero Collision</h2>
+                    <p>No inter-robot collision detected.</p>
+                </div>
+
+                <div id="liveEventFeed" class="event-box"><h2>📡 Live P2P Events</h2><div id="eventList"><p>Waiting for live events...</p></div></div>
+                <div class="event-box">
+                    <h2>🔄 Deadlock Resolution</h2>
+                    <p>Intersection priority dynamically assigned.</p>
+                </div>
+
+                <div class="event-box" id="benchmark-box">
+                    <h2>📊 Performance Benchmark</h2>
+                    <p>Decentralized priority-based routing vs traditional stop-and-wait.</p>
+                    <button id="runBenchmarkBtn" style="margin-top:10px;padding:10px 20px;border-radius:8px;border:none;background:#2563eb;color:#fff;font-weight:600;cursor:pointer;">
+                        Run Benchmark
+                    </button>
+                    <div id="benchmarkResult" style="margin-top:14px;font-size:15px;line-height:1.6;"></div>
+                </div>
+
+            </section>
+
+
+            <!-- ANALYTICS -->
+            <section id="analytics" class="page">
+
+                <div class="page-header">
+
+                    <h2>📊 Performance Analytics</h2>
+                    <p id="chartDebugStatus" style="color:#f2a93b;font-weight:700;">DEBUG: not run yet</p>
+
+                    <p>
+                        Traditional system vs EdgeFleet
+                    </p>
+
+                </div>
+
+                <div class="analytics">
+
+                    <div>
+                        <span>Traditional</span>
+                        <strong>100 sec</strong>
+                    </div>
+
+                    <div>
+                        <span>EdgeFleet</span>
+                        <strong>76 sec</strong>
+                    </div>
+
+                    <div>
+                        <span>Improvement</span>
+                        <strong>24%</strong>
+                    </div>
+
+                    <div>
+                        <span>Collisions</span>
+                        <strong>0</strong>
+                    </div>
+
+                </div>
+
+                <div class="charts-grid">
+
+                    <div class="chart-card">
+                        <h3>Tasks Completed Over Time</h3>
+                        <div class="chart-wrap" style="position:relative;height:220px;width:100%;"><canvas id="chartTasks" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Collisions &amp; Deadlocks Over Time</h3>
+                        <div class="chart-wrap" style="position:relative;height:220px;width:100%;"><canvas id="chartCollisions" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Robot Battery Levels Over Time</h3>
+                        <div class="chart-wrap" style="position:relative;height:220px;width:100%;"><canvas id="chartBattery" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Efficiency % Trend</h3>
+                        <div class="chart-wrap" style="position:relative;height:220px;width:100%;"><canvas id="chartEfficiency" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        
+
+<section class="task-allocation-section">
+    <h2>Task Allocation</h2>
+
+    <div class="table-container">
+        <table id="taskAllocationTable">
+            <thead>
+                <tr>
+                    <th>Task ID</th>
+                    <th>Pickup</th>
+                    <th>Drop</th>
+                    <th>Robot</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="5">Loading tasks...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+            <!-- SETUP PAGE -->
+            <section id="setup" class="page">
+                <div class="page-header">
+                    <h2>⚙️ Fleet Setup</h2>
+                    <p>Configure and save warehouse and robot information.</p>
+                </div>
+
+                <div class="setup-grid">
+                    <div class="chart-card">
+                        <h3>🏭 Warehouse Details</h3>
+
+                        <label>Warehouse Name</label>
+                        <input type="text" id="warehouseName" placeholder="Smart Warehouse">
+
+                        <label>Warehouse Location</label>
+                        <input type="text" id="warehouseLocation" placeholder="Nagpur">
+
+                        <label>Warehouse Grid Size</label>
+                        <input type="number" id="warehouseGrid" min="10" max="40" value="20">
+
+                        <label>Number of Robots</label>
+                        <input type="number" id="warehouseRobots" min="1" max="8" value="3">
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>🤖 Robot Details</h3>
+
+                        <label>Robot ID</label>
+                        <input type="text" id="robotId" placeholder="R1">
+
+                        <label>Robot Name</label>
+                        <input type="text" id="robotName" placeholder="AMR-01">
+
+                        <label>Robot Type</label>
+                        <input type="text" id="robotType" placeholder="Autonomous Mobile Robot">
+
+                        <label>Battery Capacity (%)</label>
+                        <input type="number" id="robotBattery" min="0" max="100" value="100">
+
+                        <button type="button" class="login-btn" onclick="saveFleetSetup()">
+                            💾 Save Setup
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chart-card" style="margin-top:20px;">
+                    <h3>📋 Saved Configuration</h3>
+                    <div id="savedSetupInfo">
+                        <p>No setup information saved yet.</p>
+                    </div>
+                </div>
+            </section>
+
+</main>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+
+
+
+</body>
+</html>
