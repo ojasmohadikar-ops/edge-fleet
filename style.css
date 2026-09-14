@@ -860,6 +860,14 @@ td {
     border: 1px solid #d7e3ea;
     border-radius: 10px;
     padding: 16px 18px;
+    height: 280px !important;
+    max-height: 280px !important;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.charts-grid {
+    align-items: start !important;
 }
 
 .chart-card h3 {
