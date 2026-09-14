@@ -956,3 +956,62 @@ td {
     }
 }
 
+
+/* ================= PROFESSIONAL REGISTER UI ================= */
+
+.register-card {
+    width: min(680px, 92vw);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.register-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.register-card label {
+    display: block;
+    margin-top: 14px;
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #dbeafe;
+}
+
+.register-card input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border-radius: 9px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #ffffff;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.register-card input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.12);
+}
+
+.register-card input::placeholder {
+    color: #64748b;
+}
+
+.register-card .login-btn {
+    margin-top: 24px;
+}
+
+@media (max-width: 650px) {
+    .register-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .register-card {
+        width: 88vw;
+    }
+}
+

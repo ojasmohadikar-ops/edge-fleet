@@ -808,3 +808,82 @@ function displayFleetSetup() {
 
 document.addEventListener("DOMContentLoaded", displayFleetSetup);
 
+
+/* ================= PROFESSIONAL REGISTRATION ================= */
+
+function showRegisterPage() {
+    const login = document.getElementById("loginScreen");
+    const register = document.getElementById("registerScreen");
+    const setup = document.getElementById("setupScreen");
+
+    if (login) login.classList.add("app-hidden");
+    if (setup) setup.classList.add("app-hidden");
+    if (register) register.classList.remove("app-hidden");
+}
+
+function showLoginPage() {
+    const login = document.getElementById("loginScreen");
+    const register = document.getElementById("registerScreen");
+
+    if (register) register.classList.add("app-hidden");
+    if (login) login.classList.remove("app-hidden");
+}
+
+function handleRegister(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("registerName").value.trim();
+    const user = document.getElementById("registerUser").value.trim();
+    const email = document.getElementById("registerEmail").value.trim();
+    const warehouse = document.getElementById("registerWarehouse").value.trim();
+    const pass = document.getElementById("registerPass").value;
+    const confirm = document.getElementById("registerConfirm").value;
+
+    if (pass !== confirm) {
+        alert("Passwords do not match.");
+        return false;
+    }
+
+    if (pass.length < 6) {
+        alert("Password must contain at least 6 characters.");
+        return false;
+    }
+
+    const account = {
+        name,
+        user,
+        email,
+        warehouse,
+        pass,
+        registeredAt: new Date().toISOString()
+    };
+
+    localStorage.setItem("edgeFleetAccount", JSON.stringify(account));
+
+    // Save operator information for dashboard/setup use
+    localStorage.setItem("edgeFleetUser", user);
+    localStorage.setItem("edgeFleetOperatorName", name);
+    localStorage.setItem("edgeFleetWarehouse", warehouse);
+
+    alert("Account created successfully! Welcome to EdgeFleet.");
+
+    // Directly enter the application
+    const registerScreen = document.getElementById("registerScreen");
+    if (registerScreen) registerScreen.classList.add("app-hidden");
+
+    const loginScreen = document.getElementById("loginScreen");
+    if (loginScreen) loginScreen.classList.add("app-hidden");
+
+    const setupScreen = document.getElementById("setupScreen");
+    if (setupScreen) setupScreen.classList.add("app-hidden");
+
+    const app = document.querySelector(".app");
+    if (app) app.classList.remove("app-hidden");
+
+    if (typeof showPage === "function") {
+        showPage("dashboard");
+    }
+
+    return false;
+}
+
