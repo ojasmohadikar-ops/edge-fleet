@@ -24,72 +24,72 @@
                     <p>Smart Warehouse</p>
                 </div>
             </div>
+
             <h3 class="login-title">Fleet Operator Login</h3>
             <p class="login-subtitle">Decentralized Edge-AI Fleet Coordination</p>
 
             <form id="loginForm" onsubmit="return handleLogin(event)">
-                <label>Operator ID</label>
-                <input type="text" id="loginUser" placeholder="admin" required>
+                <label>User ID</label>
+                <input type="text" id="loginUser" placeholder="Enter User ID" required>
 
                 <label>Password</label>
-                <input type="password" id="loginPass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required>
+                <input type="password" id="loginPass" placeholder="Enter Password" required>
 
-                <button type="submit" class="login-btn">Sign In</button>
-                <p class="login-hint">Demo credentials: <b>admin</b> / <b>admin123</b></p>
+                <button type="submit" class="login-btn">Sign In →</button>
+
                 <button type="button" class="register-link-btn" onclick="showRegisterPage()">
-                    Create New Account
+                    Add New Account
+                </button>
+
+                <button type="button" class="register-link-btn" onclick="tryDemo()">
+                    Try First
                 </button>
             </form>
         </div>
     </div>
 
-    
+
     <!-- SETUP SCREEN -->
     
     <!-- PROFESSIONAL REGISTER SCREEN -->
     <div id="registerScreen" class="login-screen app-hidden" style="display:none !important;">
         <div class="login-card register-card">
+
             <img src="./edgefleed.PNG?v=3" alt="EDGE-FLEET Logo" class="edgefleet-logo">
-            <h3 class="login-title">Create Fleet Account</h3>
-            <p class="login-subtitle">Register your operator profile to access EdgeFleet</p>
+
+            <h3 class="login-title">Create New Account</h3>
+            <p class="login-subtitle">Create your EdgeFleet operator account</p>
 
             <form id="registerForm" onsubmit="return handleRegister(event)">
 
-                <div class="register-row">
-                    <div>
-                        <label>Full Name</label>
-                        <input type="text" id="registerName" placeholder="Enter your full name" required>
-                    </div>
+                <label>User ID</label>
+                <input type="text"
+                       id="registerUser"
+                       placeholder="Create User ID"
+                       autocomplete="username"
+                       required>
 
-                    <div>
-                        <label>Operator ID</label>
-                        <input type="text" id="registerUser" placeholder="e.g. operator01" required>
-                    </div>
-                </div>
+                <label>Set Password</label>
+                <input type="password"
+                       id="registerPass"
+                       placeholder="Create Password"
+                       autocomplete="new-password"
+                       required>
 
-                <label>Email Address</label>
-                <input type="email" id="registerEmail" placeholder="operator@example.com" required>
-
-                <label>Warehouse Name</label>
-                <input type="text" id="registerWarehouse" placeholder="Smart Warehouse" required>
-
-                <div class="register-row">
-                    <div>
-                        <label>Password</label>
-                        <input type="password" id="registerPass" placeholder="Create password" required>
-                    </div>
-
-                    <div>
-                        <label>Confirm Password</label>
-                        <input type="password" id="registerConfirm" placeholder="Confirm password" required>
-                    </div>
-                </div>
+                <label>Confirm Password</label>
+                <input type="password"
+                       id="registerConfirm"
+                       placeholder="Confirm Password"
+                       autocomplete="new-password"
+                       required>
 
                 <button type="submit" class="login-btn">
                     Create Account & Continue →
                 </button>
 
-                <button type="button" class="register-link-btn" onclick="showLoginPage()">
+                <button type="button"
+                        class="register-link-btn"
+                        onclick="showLoginPage()">
                     ← Back to Sign In
                 </button>
 
@@ -106,19 +106,6 @@
                     <p>Smart Warehouse</p>
                 </div>
             </div>
-            <h3 class="login-title">Configure Your Warehouse</h3>
-            <p class="login-subtitle">Set fleet size and warehouse dimensions to begin</p>
-
-            <form id="setupForm" onsubmit="return handleSetup(event)">
-                <label>Warehouse Grid Size (10-40)</label>
-                <input type="number" id="setupGridSize" min="10" max="40" value="20" required>
-
-                <label>Number of Robots (1-8)</label>
-                <input type="number" id="setupNumRobots" min="1" max="8" value="4" required>
-
-                <button type="submit" class="login-btn">Deploy Fleet &amp; Start Simulation</button>
-                <p class="login-hint">Robots will begin moving immediately after setup.</p>
-            </form>
         </div>
     </div>
 

@@ -590,28 +590,231 @@ function simulateEvent() {
 }
 
 
+// ================= USER ACCOUNT SYSTEM =================
+
+const USERS_KEY = "edgeFleetUsers";
+const CURRENT_USER_KEY = "edgeFleetCurrentUser";
+
+function getUsers() {
+    try {
+        return JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+    } catch (error) {
+        console.error("Unable to read user accounts:", error);
+        return {};
+    }
+}
+
+function saveUsers(users) {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+function getCurrentUserId() {
+    return localStorage.getItem(CURRENT_USER_KEY);
+}
+
+function setCurrentUser(userId) {
+    localStorage.setItem(CURRENT_USER_KEY, userId);
+    localStorage.setItem("edgeFleetUser", userId);
+}
+
+function openDashboard() {
+    const loginScreen = document.getElementById("loginScreen");
+    const registerScreen = document.getElementById("registerScreen");
+    const setupScreen = document.getElementById("setupScreen");
+    const app = document.getElementById("appRoot");
+
+    if (loginScreen) {
+        loginScreen.classList.add("app-hidden");
+        loginScreen.style.display = "none";
+    }
+
+    if (registerScreen) {
+        registerScreen.classList.add("app-hidden");
+        registerScreen.style.display = "none";
+    }
+
+    if (setupScreen) {
+        setupScreen.classList.add("app-hidden");
+        setupScreen.style.display = "none";
+    }
+
+    if (app) {
+        app.classList.remove("app-hidden");
+        app.style.display = "flex";
+    }
+
+    if (typeof showPage === "function") {
+        showPage("dashboard");
+    }
+}
+
+
 // ================= LOGIN HANDLING =================
+
 function handleLogin(event) {
     event.preventDefault();
-    const user = document.getElementById('loginUser').value.trim();
-    const pass = document.getElementById('loginPass').value.trim();
 
-    if (user === 'admin' && pass === 'admin123') {
-        document.getElementById('loginScreen').style.display = 'none';
-        sessionStorage.setItem('edgefleet_logged_in', 'true');
-        if (sessionStorage.getItem('edgefleet_configured') === 'true') {
-            const appRootEl = document.getElementById('appRoot');
-            appRootEl.style.display = 'flex';
-            appRootEl.classList.remove('app-hidden');
-        } else {
-            const setupEl = document.getElementById('setupScreen');
-            setupEl.style.display = 'flex';
-            setupEl.classList.remove('app-hidden');
-        }
-    } else {
-        alert('Invalid credentials. Use admin / admin123');
+    const user = document.getElementById("loginUser").value.trim();
+    const pass = document.getElementById("loginPass").value;
+
+    if (!user || !pass) {
+        alert("Please enter User ID and Password.");
+        return false;
     }
+
+    const users = getUsers();
+    const account = users[user];
+
+    // Keep the original demo/admin login working
+    if (user === "admin" && pass === "admin123") {
+        setCurrentUser("admin");
+        localStorage.setItem("edgeFleetOperatorName", "Admin");
+        localStorage.setItem("edgeFleetWarehouse", "EdgeFleet Smart Warehouse");
+        openDashboard();
+        return false;
+    }
+
+    if (!account) {
+        alert("Account not found. Please use Add New Account first.");
+        return false;
+    }
+
+    if (account.password !== pass) {
+        alert("Incorrect password.");
+        return false;
+    }
+
+    // Restore this user's information
+    setCurrentUser(user);
+    localStorage.setItem("edgeFleetOperatorName", account.userId);
+    localStorage.setItem("edgeFleetWarehouse", account.warehouse || "EdgeFleet Smart Warehouse");
+
+    // Restore this user's saved setup
+    if (account.setup) {
+        localStorage.setItem("edgeFleetSetup", JSON.stringify(account.setup));
+    } else {
+        localStorage.removeItem("edgeFleetSetup");
+    }
+
+    openDashboard();
+
+    // Refresh saved setup display if the Setup page is opened later
+    if (typeof displayFleetSetup === "function") {
+        setTimeout(displayFleetSetup, 100);
+    }
+
     return false;
+}
+
+
+// ================= REGISTER + SETUP =================
+
+function showRegisterPage() {
+    const login = document.getElementById("loginScreen");
+    const register = document.getElementById("registerScreen");
+    const setup = document.getElementById("setupScreen");
+
+    if (login) {
+        login.classList.add("app-hidden");
+        login.style.display = "none";
+    }
+
+    if (setup) {
+        setup.classList.add("app-hidden");
+        setup.style.display = "none";
+    }
+
+    if (register) {
+        register.classList.remove("app-hidden");
+        register.style.display = "flex";
+    }
+}
+
+function showLoginPage() {
+    const login = document.getElementById("loginScreen");
+    const register = document.getElementById("registerScreen");
+
+    if (register) {
+        register.classList.add("app-hidden");
+        register.style.display = "none";
+    }
+
+    if (login) {
+        login.classList.remove("app-hidden");
+        login.style.display = "flex";
+    }
+}
+
+function handleRegister(event) {
+    event.preventDefault();
+
+    const user = document.getElementById("registerUser").value.trim();
+    const pass = document.getElementById("registerPass").value;
+    const confirm = document.getElementById("registerConfirm").value;
+
+    if (!user) {
+        alert("Please enter a User ID.");
+        return false;
+    }
+
+    if (pass.length < 6) {
+        alert("Password must contain at least 6 characters.");
+        return false;
+    }
+
+    if (pass !== confirm) {
+        alert("Passwords do not match.");
+        return false;
+    }
+
+    const users = getUsers();
+
+    if (users[user]) {
+        alert("This User ID already exists. Please choose another User ID.");
+        return false;
+    }
+
+    users[user] = {
+        userId: user,
+        password: pass,
+        warehouse: "EdgeFleet Smart Warehouse",
+        setup: null,
+        createdAt: new Date().toISOString()
+    };
+
+    saveUsers(users);
+
+    setCurrentUser(user);
+    localStorage.setItem("edgeFleetOperatorName", user);
+    localStorage.setItem("edgeFleetWarehouse", "EdgeFleet Smart Warehouse");
+
+    alert("Account created successfully! Welcome to EdgeFleet.");
+
+    openDashboard();
+
+    return false;
+}
+
+
+/* ================= TRY FIRST / DEMO ================= */
+
+function tryDemo() {
+    setCurrentUser("demo");
+
+    localStorage.setItem("edgeFleetOperatorName", "Demo Operator");
+    localStorage.setItem("edgeFleetWarehouse", "EdgeFleet Smart Warehouse");
+
+    openDashboard();
+
+    if (typeof startSimulation === "function") {
+        setTimeout(() => {
+            try {
+                startSimulation();
+            } catch (error) {
+                console.error("Demo simulation error:", error);
+            }
+        }, 300);
+    }
 }
 
 async function handleSetup(event) {
@@ -800,10 +1003,31 @@ function saveFleetSetup() {
         robotBattery: document.getElementById("robotBattery")?.value || ""
     };
 
+    // Keep the existing setup storage working
     localStorage.setItem("edgeFleetSetup", JSON.stringify(setup));
+
+    // Save setup inside the currently signed-in user's account
+    const currentUser = localStorage.getItem("edgeFleetCurrentUser");
+
+    if (currentUser && currentUser !== "demo") {
+        try {
+            const users = JSON.parse(
+                localStorage.getItem("edgeFleetUsers") || "{}"
+            );
+
+            if (users[currentUser]) {
+                users[currentUser].setup = setup;
+                localStorage.setItem("edgeFleetUsers", JSON.stringify(users));
+            }
+        } catch (error) {
+            console.error("User setup save error:", error);
+        }
+    }
+
     displayFleetSetup();
     alert("Setup saved successfully!");
 }
+
 
 function displayFleetSetup() {
     const box = document.getElementById("savedSetupInfo");
@@ -862,97 +1086,7 @@ function showLoginPage() {
     if (login) login.classList.remove("app-hidden");
 }
 
-function handleRegister(event) {
-    event.preventDefault();
 
-    const name = document.getElementById("registerName").value.trim();
-    const user = document.getElementById("registerUser").value.trim();
-    const email = document.getElementById("registerEmail").value.trim();
-    const warehouse = document.getElementById("registerWarehouse").value.trim();
-    const pass = document.getElementById("registerPass").value;
-    const confirm = document.getElementById("registerConfirm").value;
-
-    if (pass !== confirm) {
-        alert("Passwords do not match.");
-        return false;
-    }
-
-    if (pass.length < 6) {
-        alert("Password must contain at least 6 characters.");
-        return false;
-    }
-
-    const account = {
-        name,
-        user,
-        email,
-        warehouse,
-        pass,
-        registeredAt: new Date().toISOString()
-    };
-
-    localStorage.setItem("edgeFleetAccount", JSON.stringify(account));
-
-    // Save operator information for dashboard/setup use
-    localStorage.setItem("edgeFleetUser", user);
-    localStorage.setItem("edgeFleetOperatorName", name);
-    localStorage.setItem("edgeFleetWarehouse", warehouse);
-
-    alert("Account created successfully! Welcome to EdgeFleet.");
-
-    // Directly enter the application
-    const registerScreen = document.getElementById("registerScreen");
-    if (registerScreen) registerScreen.classList.add("app-hidden");
-
-    const loginScreen = document.getElementById("loginScreen");
-    if (loginScreen) loginScreen.classList.add("app-hidden");
-
-    const setupScreen = document.getElementById("setupScreen");
-    if (setupScreen) setupScreen.classList.add("app-hidden");
-
-    const app = document.querySelector(".app");
-    if (app) app.classList.remove("app-hidden");
-
-    if (typeof showPage === "function") {
-        showPage("dashboard");
-    }
-
-    return false;
-}
-
-
-/* ================= TRY DEMO ================= */
-
-function tryDemo() {
-    localStorage.setItem("edgeFleetUser", "demo");
-    localStorage.setItem("edgeFleetOperatorName", "Demo Operator");
-    localStorage.setItem("edgeFleetWarehouse", "EdgeFleet Smart Warehouse");
-
-    const loginScreen = document.getElementById("loginScreen");
-    const registerScreen = document.getElementById("registerScreen");
-    const setupScreen = document.getElementById("setupScreen");
-    const app = document.querySelector(".app");
-
-    if (loginScreen) loginScreen.classList.add("app-hidden");
-    if (registerScreen) registerScreen.classList.add("app-hidden");
-    if (setupScreen) setupScreen.classList.add("app-hidden");
-
-    if (app) app.classList.remove("app-hidden");
-
-    if (typeof showPage === "function") {
-        showPage("dashboard");
-    }
-
-    if (typeof startSimulation === "function") {
-        setTimeout(() => {
-            try {
-                startSimulation();
-            } catch (e) {
-                console.log("Demo simulation start skipped:", e);
-            }
-        }, 500);
-    }
-}
 
 
 // ================= FORCE LOGIN-FIRST ON PAGE LOAD =================
