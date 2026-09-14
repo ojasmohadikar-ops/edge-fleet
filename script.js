@@ -492,7 +492,8 @@ function updateRobotPositions(robots) {
     const simEls = [
         document.querySelector('.sim-r1'),
         document.querySelector('.sim-r2'),
-        document.querySelector('.sim-r3')
+        document.querySelector('.sim-r3'),
+        document.querySelector('.sim-r4')
     ];
 
     robots.forEach((robot, i) => {
