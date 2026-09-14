@@ -1275,3 +1275,24 @@ tr:hover {
     transform: scale(1.08);
 }
 
+
+/* ===== LIVE ROBOT POSITION FIX ===== */
+.robot,
+.robot1,
+.robot2,
+.robot3,
+.robot4 {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    transition:
+        left 300ms linear,
+        top 300ms linear,
+        transform 200ms ease !important;
+    will-change: left, top, transform;
+}
+
