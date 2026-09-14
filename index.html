@@ -38,6 +38,33 @@
         </div>
     </div>
 
+    
+    <!-- SETUP SCREEN -->
+    <div id="setupScreen" class="login-screen app-hidden">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-box">EF</div>
+                <div>
+                    <h2>EdgeFleet</h2>
+                    <p>Smart Warehouse</p>
+                </div>
+            </div>
+            <h3 class="login-title">Configure Your Warehouse</h3>
+            <p class="login-subtitle">Set fleet size and warehouse dimensions to begin</p>
+
+            <form id="setupForm" onsubmit="return handleSetup(event)">
+                <label>Warehouse Grid Size (10-40)</label>
+                <input type="number" id="setupGridSize" min="10" max="40" value="20" required>
+
+                <label>Number of Robots (1-8)</label>
+                <input type="number" id="setupNumRobots" min="1" max="8" value="4" required>
+
+                <button type="submit" class="login-btn">Deploy Fleet &amp; Start Simulation</button>
+                <p class="login-hint">Robots will begin moving immediately after setup.</p>
+            </form>
+        </div>
+    </div>
+
     <div class="app app-hidden" id="appRoot">
 
         <!-- SIDEBAR -->

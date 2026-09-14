@@ -7,13 +7,30 @@ const app = express();
 app.use(express.static(path.join(__dirname, '..')));
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
-const NUM_ROBOTS = 4, GRID_SIZE = 20, TICK_MS = 300, STUCK_LIMIT = 3, NUM_TASKS = 6;
+let NUM_ROBOTS = 4;
+let GRID_SIZE = 20;
+const TICK_MS = 300, STUCK_LIMIT = 3, NUM_TASKS = 6;
+let simulationRunning = false;
+let baseGrid = [];
 const CHARGE_STATION = { x: 1, y: 1 };
 const BATTERY_LOW_THRESHOLD = 20;
 const CHARGE_RATE = 1.5;
-const baseGrid = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
-for (let i = 5; i < 15; i++) { baseGrid[8][i] = 1; baseGrid[12][i] = 1; }
-baseGrid[8][10] = 0; baseGrid[12][10] = 0;
+function buildBaseGrid() {
+  const grid = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
+  const midStart = Math.floor(GRID_SIZE * 0.25);
+  const midEnd = Math.floor(GRID_SIZE * 0.75);
+  const rowA = Math.floor(GRID_SIZE * 0.4);
+  const rowB = Math.floor(GRID_SIZE * 0.6);
+  const gapCol = Math.floor(GRID_SIZE / 2);
+  for (let i = midStart; i < midEnd; i++) {
+    grid[rowA][i] = 1;
+    grid[rowB][i] = 1;
+  }
+  grid[rowA][gapCol] = 0;
+  grid[rowB][gapCol] = 0;
+  return grid;
+}
+baseGrid = buildBaseGrid();
 let dynamicBlocks = new Set();
 function isWalkable(x, y) {
   if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) return false;
@@ -332,13 +349,33 @@ app.post('/api/run-benchmark', (req, res) => {
 });
 wss.on('connection', (ws) => {
   console.log('Dashboard connected');
-  ws.send(JSON.stringify({ type: 'init', grid: baseGrid, robots, tasks, dynamicBlocks: Array.from(dynamicBlocks) }));
+  ws.send(JSON.stringify({ type: 'init', grid: baseGrid, robots, tasks, dynamicBlocks: Array.from(dynamicBlocks), gridSize: GRID_SIZE, numRobots: NUM_ROBOTS, simulationRunning }));
 });
 setInterval(() => {
-  moveRobots();
-  const data = JSON.stringify({ type: 'update', robots, tasks, collisionCount, deadlockResolutions, tasksCompleted, reroutesFromBlockage, dynamicBlocks: Array.from(dynamicBlocks), p2pActive: true });
+  if (simulationRunning) moveRobots();
+  const data = JSON.stringify({ type: 'update', robots, tasks, collisionCount, deadlockResolutions, tasksCompleted, reroutesFromBlockage, dynamicBlocks: Array.from(dynamicBlocks), p2pActive: true, simulationRunning, gridSize: GRID_SIZE });
   wss.clients.forEach(client => client.send(data));
 }, TICK_MS);
+
+app.post('/configure', (req, res) => {
+  const requestedRobots = parseInt(req.body.numRobots, 10);
+  const requestedGrid = parseInt(req.body.gridSize, 10);
+
+  NUM_ROBOTS = Math.min(Math.max(requestedRobots || 4, 1), 8);
+  GRID_SIZE = Math.min(Math.max(requestedGrid || 20, 10), 40);
+
+  baseGrid = buildBaseGrid();
+  dynamicBlocks.clear();
+  initRobots();
+  simulationRunning = true;
+
+  res.json({ ok: true, numRobots: NUM_ROBOTS, gridSize: GRID_SIZE });
+});
+
+app.post('/toggle-simulation', (req, res) => {
+  simulationRunning = !simulationRunning;
+  res.json({ running: simulationRunning });
+});
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, '0.0.0.0', () => console.log(`Backend running on port ${PORT}`));
 

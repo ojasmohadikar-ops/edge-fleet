@@ -91,6 +91,10 @@ function connectWebSocket() {
 
                 console.log("Live Simulation Update:", data);
 
+                if (data.gridSize) {
+                    GRID_SIZE = data.gridSize;
+                }
+
                 updateLiveEvents(data);
 
                 // Robots
@@ -458,7 +462,7 @@ function showPage(pageId) {
 }
 
 // ================= LIVE ROBOT POSITION UPDATE =================
-const GRID_SIZE = 20;
+let GRID_SIZE = 20;
 
 function updateRobotPositions(robots) {
     const robotEls = [
@@ -557,21 +561,53 @@ function handleLogin(event) {
 
     if (user === 'admin' && pass === 'admin123') {
         document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('appRoot').classList.remove('app-hidden');
         sessionStorage.setItem('edgefleet_logged_in', 'true');
+        if (sessionStorage.getItem('edgefleet_configured') === 'true') {
+            document.getElementById('appRoot').classList.remove('app-hidden');
+        } else {
+            document.getElementById('setupScreen').classList.remove('app-hidden');
+        }
     } else {
         alert('Invalid credentials. Use admin / admin123');
     }
     return false;
 }
 
-// Auto-skip login if already logged in this session
+async function handleSetup(event) {
+    event.preventDefault();
+    const gridSize = parseInt(document.getElementById('setupGridSize').value, 10);
+    const numRobots = parseInt(document.getElementById('setupNumRobots').value, 10);
+
+    try {
+        const response = await fetch(`${API_URL}/configure`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ gridSize, numRobots })
+        });
+        if (!response.ok) throw new Error('Configure failed');
+
+        sessionStorage.setItem('edgefleet_configured', 'true');
+        document.getElementById('setupScreen').classList.add('app-hidden');
+        document.getElementById('appRoot').classList.remove('app-hidden');
+    } catch (error) {
+        alert('Failed to configure warehouse. Check console for details.');
+        console.error('Setup error:', error);
+    }
+    return false;
+}
+
+// Auto-skip login/setup if already done this session
 window.addEventListener('DOMContentLoaded', () => {
     if (sessionStorage.getItem('edgefleet_logged_in') === 'true') {
         const loginScreen = document.getElementById('loginScreen');
-        const appRoot = document.getElementById('appRoot');
         if (loginScreen) loginScreen.style.display = 'none';
-        if (appRoot) appRoot.classList.remove('app-hidden');
+        if (sessionStorage.getItem('edgefleet_configured') === 'true') {
+            const appRoot = document.getElementById('appRoot');
+            if (appRoot) appRoot.classList.remove('app-hidden');
+        } else {
+            const setupScreen = document.getElementById('setupScreen');
+            if (setupScreen) setupScreen.classList.remove('app-hidden');
+        }
     }
 });
 
