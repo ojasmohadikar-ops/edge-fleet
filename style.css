@@ -1352,3 +1352,35 @@ tr:hover {
     transform: translateX(-50%) !important;
 }
 
+
+/* ===== R4 COMPLETE ROBOT FIX ===== */
+.robot4 {
+    width: 35px !important;
+    height: 35px !important;
+    border-radius: 8px !important;
+    position: absolute !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+    z-index: 50 !important;
+
+    background: #22c55e !important;
+    color: #06130a !important;
+    border: 2px solid rgba(255,255,255,0.8) !important;
+    box-shadow: 0 0 14px rgba(34,197,94,0.65) !important;
+
+    left: 30% !important;
+    top: 25% !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    transform: translate(-50%, -50%) !important;
+}
+
+.robot4::before,
+.robot4::after {
+    content: none !important;
+}
+
