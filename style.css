@@ -1296,3 +1296,12 @@ tr:hover {
     will-change: left, top, transform;
 }
 
+
+/* ===== ROBOT 4 VISUAL ===== */
+.robot4 {
+    background: #22c55e !important;
+    color: #06130a !important;
+    border: 2px solid rgba(255,255,255,0.35);
+    box-shadow: 0 0 14px rgba(34,197,94,0.45);
+}
+
