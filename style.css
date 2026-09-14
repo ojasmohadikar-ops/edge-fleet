@@ -1305,3 +1305,50 @@ tr:hover {
     box-shadow: 0 0 14px rgba(34,197,94,0.45);
 }
 
+
+/* ===== FINAL R4 ROBOT SHAPE FIX ===== */
+.robot4 {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+    background: #22c55e !important;
+    color: #06130a !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.25), 0 0 18px rgba(34,197,94,0.65) !important;
+    position: absolute !important;
+    z-index: 50 !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+.robot4::before {
+    content: "" !important;
+    position: absolute !important;
+    width: 10px !important;
+    height: 10px !important;
+    background: #06130a !important;
+    border-radius: 50% !important;
+    top: 7px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+.robot4::after {
+    content: "" !important;
+    position: absolute !important;
+    width: 4px !important;
+    height: 4px !important;
+    background: #22c55e !important;
+    border-radius: 50% !important;
+    top: 10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
