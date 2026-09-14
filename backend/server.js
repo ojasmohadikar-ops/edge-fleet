@@ -357,6 +357,22 @@ setInterval(() => {
   wss.clients.forEach(client => client.send(data));
 }, TICK_MS);
 
+app.get('/debug-robots', (req, res) => {
+  res.json({
+    simulationRunning,
+    gridSize: GRID_SIZE,
+    numRobots: NUM_ROBOTS,
+    robots: robots.map(r => ({
+      id: r.id,
+      x: r.x,
+      y: r.y,
+      battery: r.battery,
+      status: r.status,
+      currentTask: r.currentTask
+    }))
+  });
+});
+
 app.post('/configure', (req, res) => {
   const requestedRobots = parseInt(req.body.numRobots, 10);
   const requestedGrid = parseInt(req.body.gridSize, 10);
