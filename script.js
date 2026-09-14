@@ -593,8 +593,16 @@ function initCharts() {
     const collisionsCanvas = document.getElementById('chartCollisions');
     const batteryCanvas = document.getElementById('chartBattery');
     const efficiencyCanvas = document.getElementById('chartEfficiency');
-    if (!tasksCanvas || !collisionsCanvas || !batteryCanvas || !efficiencyCanvas) return;
-    if (typeof Chart === 'undefined') return;
+    const debugEl = document.getElementById('chartDebugStatus');
+    if (!tasksCanvas || !collisionsCanvas || !batteryCanvas || !efficiencyCanvas) {
+        if (debugEl) debugEl.textContent = 'DEBUG: canvas elements not found in DOM';
+        return;
+    }
+    if (typeof Chart === 'undefined') {
+        if (debugEl) debugEl.textContent = 'DEBUG: Chart.js library did not load';
+        return;
+    }
+    if (debugEl) debugEl.textContent = 'DEBUG: initCharts() ran successfully, Chart.js loaded';
 
     const baseOptions = {
         responsive: true,
@@ -644,7 +652,12 @@ function pushHistory(arr, value) {
 
 function updateAnalyticsCharts(data) {
     if (!data.robots) return;
-    if (!chartsInitialized) return;
+    const debugEl2 = document.getElementById('chartDebugStatus');
+    if (!chartsInitialized) {
+        if (debugEl2) debugEl2.textContent = 'DEBUG: waiting for charts to initialize (open Analytics tab)';
+        return;
+    }
+    if (debugEl2) debugEl2.textContent = 'DEBUG: data points collected = ' + chartHistory.labels.length;
 
     const timeLabel = new Date().toLocaleTimeString('en-IN', { hour12: false });
     pushHistory(chartHistory.labels, timeLabel);
