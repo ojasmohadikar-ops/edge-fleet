@@ -1068,24 +1068,6 @@ document.addEventListener("DOMContentLoaded", displayFleetSetup);
 
 /* ================= PROFESSIONAL REGISTRATION ================= */
 
-function showRegisterPage() {
-    const login = document.getElementById("loginScreen");
-    const register = document.getElementById("registerScreen");
-    const setup = document.getElementById("setupScreen");
-
-    if (login) login.classList.add("app-hidden");
-    if (setup) setup.classList.add("app-hidden");
-    if (register) register.classList.remove("app-hidden");
-}
-
-function showLoginPage() {
-    const login = document.getElementById("loginScreen");
-    const register = document.getElementById("registerScreen");
-
-    if (register) register.classList.add("app-hidden");
-    if (login) login.classList.remove("app-hidden");
-}
-
 
 
 
