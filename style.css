@@ -738,8 +738,8 @@ td {
 .login-card {
     background: #ffffff;
     border-radius: 16px;
-    padding: 40px 36px;
-    width: 380px;
+    padding: 48px 44px;
+    width: 460px;
     max-width: 90%;
     box-shadow: 0 20px 60px rgba(0,0,0,0.35);
 }
@@ -1050,7 +1050,11 @@ body {
         radial-gradient(circle at 50% 20%, rgba(0, 212, 255, 0.14), transparent 32%),
         radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.08), transparent 30%),
         linear-gradient(135deg, #050d18 0%, #081525 50%, #030912 100%) !important;
-    position: relative;
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     overflow: hidden;
 }
 
