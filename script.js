@@ -634,19 +634,7 @@ async function handleSetup(event) {
 }
 
 // Auto-skip login/setup if already done this session
-window.addEventListener('DOMContentLoaded', () => {
-    if (sessionStorage.getItem('edgefleet_logged_in') === 'true') {
-        const loginScreen = document.getElementById('loginScreen');
-        if (loginScreen) loginScreen.style.display = 'none';
-        if (sessionStorage.getItem('edgefleet_configured') === 'true') {
-            const appRoot = document.getElementById('appRoot');
-            if (appRoot) appRoot.classList.remove('app-hidden');
-        } else {
-            const setupScreen = document.getElementById('setupScreen');
-            if (setupScreen) setupScreen.classList.remove('app-hidden');
-        }
-    }
-});
+// Auto-skip removed: login screen always shows first on page load.
 
 // ================= ANALYTICS CHARTS =================
 const MAX_HISTORY_POINTS = 30;
