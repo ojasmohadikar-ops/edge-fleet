@@ -887,3 +887,37 @@ function handleRegister(event) {
     return false;
 }
 
+
+/* ================= TRY DEMO ================= */
+
+function tryDemo() {
+    localStorage.setItem("edgeFleetUser", "demo");
+    localStorage.setItem("edgeFleetOperatorName", "Demo Operator");
+    localStorage.setItem("edgeFleetWarehouse", "EdgeFleet Smart Warehouse");
+
+    const loginScreen = document.getElementById("loginScreen");
+    const registerScreen = document.getElementById("registerScreen");
+    const setupScreen = document.getElementById("setupScreen");
+    const app = document.querySelector(".app");
+
+    if (loginScreen) loginScreen.classList.add("app-hidden");
+    if (registerScreen) registerScreen.classList.add("app-hidden");
+    if (setupScreen) setupScreen.classList.add("app-hidden");
+
+    if (app) app.classList.remove("app-hidden");
+
+    if (typeof showPage === "function") {
+        showPage("dashboard");
+    }
+
+    if (typeof startSimulation === "function") {
+        setTimeout(() => {
+            try {
+                startSimulation();
+            } catch (e) {
+                console.log("Demo simulation start skipped:", e);
+            }
+        }, 500);
+    }
+}
+
