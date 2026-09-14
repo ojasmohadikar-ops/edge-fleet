@@ -509,20 +509,37 @@ function updateRobotPositions(robots) {
 let simulationRunning = false;
 
 async function startSimulation() {
-    simulationRunning = !simulationRunning;
-
     try {
-        await Promise.resolve({ ok: true });
+        const response = await fetch(`${API_URL}/toggle-simulation`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
+        if (!response.ok) {
+            throw new Error("Simulation toggle request failed");
+        }
+
+        const data = await response.json();
+
+        simulationRunning = Boolean(data.running);
 
         addLiveEvent(
             simulationRunning
                 ? "▶️ Simulation started: multi-robot P2P coordination active."
                 : "⏸️ Simulation paused."
         );
+
+        console.log(
+            simulationRunning
+                ? "🚀 Backend simulation RUNNING"
+                : "⏸️ Backend simulation PAUSED"
+        );
+
     } catch (error) {
         console.error("Simulation control error:", error);
-        addLiveEvent("❌ Simulation control request failed.");
+        addLiveEvent("❌ Unable to control backend simulation.");
     }
 }
 
