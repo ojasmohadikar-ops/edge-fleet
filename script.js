@@ -600,9 +600,13 @@ function handleLogin(event) {
         document.getElementById('loginScreen').style.display = 'none';
         sessionStorage.setItem('edgefleet_logged_in', 'true');
         if (sessionStorage.getItem('edgefleet_configured') === 'true') {
-            document.getElementById('appRoot').classList.remove('app-hidden');
+            const appRootEl = document.getElementById('appRoot');
+            appRootEl.style.display = 'flex';
+            appRootEl.classList.remove('app-hidden');
         } else {
-            document.getElementById('setupScreen').classList.remove('app-hidden');
+            const setupEl = document.getElementById('setupScreen');
+            setupEl.style.display = 'flex';
+            setupEl.classList.remove('app-hidden');
         }
     } else {
         alert('Invalid credentials. Use admin / admin123');
@@ -624,8 +628,12 @@ async function handleSetup(event) {
         if (!response.ok) throw new Error('Configure failed');
 
         sessionStorage.setItem('edgefleet_configured', 'true');
-        document.getElementById('setupScreen').classList.add('app-hidden');
-        document.getElementById('appRoot').classList.remove('app-hidden');
+        const setupEl2 = document.getElementById('setupScreen');
+        setupEl2.style.display = 'none';
+        setupEl2.classList.add('app-hidden');
+        const appRootEl2 = document.getElementById('appRoot');
+        appRootEl2.style.display = 'flex';
+        appRootEl2.classList.remove('app-hidden');
     } catch (error) {
         alert('Failed to configure warehouse. Check console for details.');
         console.error('Setup error:', error);
