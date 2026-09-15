@@ -189,7 +189,13 @@ function moveRobots() {
 
   // Step 3: every robot independently decides move/wait using ONLY neighbor broadcasts
   const decisions = robots.map(r => {
-    const next = r.path.length > 0 ? r.path[0] : { x: r.x, y: r.y };
+    // Robots with no path (idle, arrived, or charging) are not actually
+    // trying to move — don't let them get falsely marked "waiting" just
+    // because another idle robot shares the same cell (e.g. charging station).
+    if (r.path.length === 0) {
+      return { robot: r, next: { x: r.x, y: r.y }, move: false };
+    }
+    const next = r.path[0];
     const { contested, loses } = decideMoveDecentralized(r, next);
     if (contested && loses) {
       r.status = 'waiting'; r.waitTicks++; collisionCount++;
