@@ -181,7 +181,7 @@ function moveRobots() {
       r.chargeTicks = 0;
       return;
     }
-    if (r.path.length === 0 && r.status !== 'waiting' && r.status !== 'charging' && r.status !== 'headingToCharge') handleArrival(r);
+    if (r.path.length === 0 && r.status !== 'charging' && r.status !== 'headingToCharge') handleArrival(r);
   });
 
   // Step 2: broadcast the CURRENT intent after arrival/task assignment
