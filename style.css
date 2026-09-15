@@ -1454,3 +1454,8 @@ tr:hover {
     background-clip: text;
     margin: 0;
 }
+
+/* FIX: app-hidden must always win over login-screen theme override */
+.login-screen.app-hidden {
+    display: none !important;
+}
