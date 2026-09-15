@@ -122,7 +122,7 @@ function replanIfPathBlocked(r) {
 function broadcastIntents(robots) {
   robots.forEach(r => {
     const next = r.path.length > 0 ? r.path[0] : { x: r.x, y: r.y };
-    p2pBus.broadcast(r.id, { x: r.x, y: r.y, next, status: r.status, battery: r.battery });
+    p2pBus.broadcast(r.id, { x: r.x, y: r.y, next, status: r.status, battery: r.battery, waitTicks: r.waitTicks || 0 });
   });
 }
 
@@ -137,14 +137,26 @@ function decideMoveDecentralized(robot, next) {
     const otherId = Number(idStr);
     if (state.next.x === next.x && state.next.y === next.y) {
       contested = true;
-      if (otherId < robot.id) loses = true; // lower id gets local priority token
+      const otherWait = state.waitTicks || 0;
+      const myWait = robot.waitTicks || 0;
+      if (otherWait !== myWait) {
+        if (otherWait > myWait) loses = true; // longer-waiting robot gets priority
+      } else if (otherId < robot.id) {
+        loses = true; // tie-break: lower id
+      }
     }
     // swap/head-on conflict: other robot's next cell is my current cell,
     // and my next cell is their current cell
     if (state.next.x === robot.x && state.next.y === robot.y &&
         next.x === state.x && next.y === state.y) {
       contested = true;
-      if (otherId < robot.id) loses = true;
+      const otherWait2 = state.waitTicks || 0;
+      const myWait2 = robot.waitTicks || 0;
+      if (otherWait2 !== myWait2) {
+        if (otherWait2 > myWait2) loses = true;
+      } else if (otherId < robot.id) {
+        loses = true;
+      }
     }
   }
   return { contested, loses };
