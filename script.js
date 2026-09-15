@@ -99,9 +99,15 @@ function connectWebSocket() {
 
                 // Robots
                 if (data.robots) {
+                    latestRobots = data.robots;
                     updateRobotCards(data.robots);
                     updateRobotPositions(data.robots);
                     updateAnalyticsCharts(data);
+                }
+
+                if (data.simulationRunning !== undefined) {
+                    simulationRunning = Boolean(data.simulationRunning);
+                    updateSimButtonLabel();
                 }
 
                 // Tasks
@@ -525,39 +531,54 @@ function updateRobotPositions(robots) {
 /* ================= SIMULATION CONTROLS ================= */
 
 let simulationRunning = false;
+let latestRobots = [];
+
+function updateSimButtonLabel() {
+    const btn = document.getElementById('simToggleBtn');
+    if (btn) {
+        btn.innerHTML = simulationRunning ? "⏹ Stop Simulation" : "▶ Start Simulation";
+    }
+    const pauseBtn = document.getElementById('pauseSimBtn');
+    if (pauseBtn) {
+        pauseBtn.disabled = !simulationRunning;
+        pauseBtn.style.opacity = simulationRunning ? "1" : "0.5";
+    }
+}
+
+async function toggleSimulationBackend() {
+    const response = await fetch(`${API_URL}/toggle-simulation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    });
+    if (!response.ok) throw new Error("Simulation toggle request failed");
+    const data = await response.json();
+    simulationRunning = Boolean(data.running);
+    updateSimButtonLabel();
+    return simulationRunning;
+}
 
 async function startSimulation() {
     try {
-        const response = await fetch(`${API_URL}/toggle-simulation`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error("Simulation toggle request failed");
-        }
-
-        const data = await response.json();
-
-        simulationRunning = Boolean(data.running);
-
+        const running = await toggleSimulationBackend();
         addLiveEvent(
-            simulationRunning
+            running
                 ? "▶️ Simulation started: multi-robot P2P coordination active."
-                : "⏸️ Simulation paused."
+                : "⏹️ Simulation stopped."
         );
-
-        console.log(
-            simulationRunning
-                ? "🚀 Backend simulation RUNNING"
-                : "⏸️ Backend simulation PAUSED"
-        );
-
     } catch (error) {
         console.error("Simulation control error:", error);
         addLiveEvent("❌ Unable to control backend simulation.");
+    }
+}
+
+async function pauseSimulation() {
+    if (!simulationRunning) return;
+    try {
+        await toggleSimulationBackend();
+        addLiveEvent("⏸️ Simulation paused.");
+    } catch (error) {
+        console.error("Pause error:", error);
+        addLiveEvent("❌ Unable to pause simulation.");
     }
 }
 
@@ -575,6 +596,30 @@ async function blockAisle() {
         if (!response.ok) throw new Error("Block request failed");
 
         addLiveEvent(`🚧 Dynamic aisle blocked at (${x}, ${y}).`);
+
+        const simArea = document.querySelector('.simulation-area');
+        if (simArea) {
+            const marker = document.createElement('div');
+            marker.className = 'aisle-block-marker';
+            marker.style.left = ((x / (GRID_SIZE - 1)) * 100) + '%';
+            marker.style.top = ((y / (GRID_SIZE - 1)) * 100) + '%';
+            marker.textContent = '🚧';
+            simArea.appendChild(marker);
+
+            setTimeout(async () => {
+                marker.remove();
+                try {
+                    await fetch(`${API_URL}/unblock`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ x, y })
+                    });
+                    addLiveEvent(`✅ Aisle at (${x}, ${y}) cleared.`);
+                } catch (e) {
+                    console.error("Unblock error:", e);
+                }
+            }, 6000);
+        }
     } catch (error) {
         console.error("Block aisle error:", error);
         addLiveEvent("❌ Unable to block aisle.");
@@ -582,7 +627,26 @@ async function blockAisle() {
 }
 
 async function rerouteRobot() {
-    addLiveEvent("🔄 AI reroute triggered: robots recalculating optimal paths.");
+    try {
+        const response = await fetch(`${API_URL}/reroute`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        });
+
+        if (!response.ok) throw new Error("Reroute request failed");
+
+        const data = await response.json();
+
+        if (data.ok) {
+            addLiveEvent(`🔄 Robot R${data.robotId} rerouted: recalculating optimal path.`);
+        } else {
+            addLiveEvent("🔄 No robot available to reroute right now.");
+        }
+    } catch (error) {
+        console.error("Reroute error:", error);
+        addLiveEvent("❌ Unable to reroute robot.");
+    }
 }
 
 function simulateEvent() {

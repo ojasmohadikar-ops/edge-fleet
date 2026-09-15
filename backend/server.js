@@ -264,6 +264,41 @@ app.post('/unblock', (req, res) => {
   dynamicBlocks.delete(`${x},${y}`);
   res.json({ ok: true, blocks: Array.from(dynamicBlocks) });
 });
+
+app.post('/reroute', (req, res) => {
+  const { id } = req.body || {};
+  let robot = null;
+
+  if (id !== undefined) {
+    robot = robots.find(r => r.id === id);
+  }
+  if (!robot) {
+    robot = robots
+      .filter(r => r.status === 'waiting')
+      .sort((a, b) => (b.waitTicks || 0) - (a.waitTicks || 0))[0];
+  }
+  if (!robot && robots.length > 0) {
+    robot = robots[0];
+  }
+  if (!robot) {
+    return res.json({ ok: false, message: 'No robots available' });
+  }
+
+  const blockedCell = robot.path.length > 0 ? robot.path[0] : null;
+  const goal = robot.path.length > 0 ? robot.path[robot.path.length - 1] : { x: robot.x, y: robot.y };
+  const newPath = astar({ x: robot.x, y: robot.y }, goal, blockedCell);
+
+  deadlockResolutions++;
+  robot.waitTicks = 0;
+
+  if (newPath.length > 0) {
+    newPath.shift();
+    robot.path = newPath;
+    robot.status = 'rerouted';
+  }
+
+  res.json({ ok: true, robotId: robot.id, newPathLength: robot.path.length });
+});
 function runBenchmark() {
   const FIXED_SEED_TASKS = 10;
   const results = {};

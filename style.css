@@ -1459,3 +1459,12 @@ tr:hover {
 .login-screen.app-hidden {
     display: none !important;
 }
+
+.aisle-block-marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    z-index: 40;
+    filter: drop-shadow(0 0 6px rgba(255,180,0,0.8));
+    pointer-events: none;
+}
